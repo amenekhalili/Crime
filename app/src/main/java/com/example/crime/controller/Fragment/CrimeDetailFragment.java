@@ -1,4 +1,4 @@
-package com.example.crime.controller;
+package com.example.crime.controller.Fragment;
 
 import android.os.Bundle;
 

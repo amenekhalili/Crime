@@ -6,7 +6,7 @@
     android:layout_margin="4dp"
     android:orientation="vertical"
     android:padding="3dp"
-    tools:context=".controller.CrimeDetailFragment">
+    tools:context=".controller.Fragment.CrimeDetailFragment">
 
 
     <TextView
