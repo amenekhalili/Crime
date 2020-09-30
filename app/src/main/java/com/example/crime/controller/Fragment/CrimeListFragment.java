@@ -1,5 +1,6 @@
 package com.example.crime.controller.Fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,11 +15,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.crime.Model.Crime;
 import com.example.crime.R;
 import com.example.crime.Repository.CrimeRepository;
+import com.example.crime.controller.Activity.CrimeDetailActivity;
 
 import java.util.List;
 
 
 public class CrimeListFragment extends Fragment {
+    public static final String EXTRA_CRIME_ID = "crime.controller.Fragment_EXTRA_CRIME_ID";
     private RecyclerView mRecyclerView;
 
 
@@ -61,6 +64,15 @@ public class CrimeListFragment extends Fragment {
             super(itemView);
             mTextViewTitle = itemView.findViewById(R.id.row_title_crime);
             mTextViewDate = itemView.findViewById(R.id.row_date_crime);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getActivity() , CrimeDetailActivity.class);
+                    intent.putExtra(EXTRA_CRIME_ID, mCrime.getId());
+                    startActivity(intent);
+                }
+            });
         }
 
         public void bindCrime(Crime crime) {
@@ -68,6 +80,8 @@ public class CrimeListFragment extends Fragment {
             mTextViewDate.setText(crime.getDate().toString());
             mCrime = crime;
         }
+
+
 
     }
 

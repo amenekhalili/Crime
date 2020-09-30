@@ -14,8 +14,10 @@ import android.widget.EditText;
 
 import com.example.crime.Model.Crime;
 import com.example.crime.R;
+import com.example.crime.Repository.CrimeRepository;
 
 import java.util.Date;
+import java.util.UUID;
 
 
 public class CrimeDetailFragment extends Fragment {
@@ -34,9 +36,13 @@ public class CrimeDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        UUID id = (UUID) getActivity().getIntent().getSerializableExtra(CrimeListFragment.EXTRA_CRIME_ID);
+        CrimeRepository crimeRepository = CrimeRepository.getIsInstance();
+        mCrime = crimeRepository.getcrime(id);
+/*
         mCrime = new Crime();
         mCrime.setTitle("TESTING THE TITLE");
-        mCrime.setSolved(true);
+        mCrime.setSolved(true);*/
 
     }
 
