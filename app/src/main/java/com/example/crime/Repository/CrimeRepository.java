@@ -28,6 +28,7 @@ public class CrimeRepository {
             crime.setTitle("Crime# " + (i+1));
             crime.setSolved( i % 2 == 0);
 
+            mCrimes.add(crime);
         }
 
     }
@@ -45,7 +46,7 @@ public class CrimeRepository {
                 return crime;
 
         }
-  return null;
+        return null;
     }
 
     public void insertCrime(Crime crime){
