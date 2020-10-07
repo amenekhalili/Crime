@@ -1,9 +1,6 @@
 package com.example.crime.controller.Fragment;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +9,13 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 
+import androidx.fragment.app.Fragment;
+
 import com.example.crime.Model.Crime;
 import com.example.crime.R;
 import com.example.crime.Repository.CrimeRepository;
+import com.example.crime.controller.Activity.CrimeDetailActivity;
 
-import java.util.Date;
 import java.util.UUID;
 
 
@@ -25,6 +24,17 @@ public class CrimeDetailFragment extends Fragment {
   private Button mButtondate;
   private CheckBox mCheckBoxsolved;
     private  Crime mCrime;
+    public static final String ARG_CRIME_ID = "ArgcrimeId";
+    private CrimeRepository mCrimeRepository;
+
+    public static CrimeDetailFragment newInstance(UUID crimeId) {
+
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_CRIME_ID,crimeId);
+        CrimeDetailFragment fragment = new CrimeDetailFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     public CrimeDetailFragment() {
         // Required empty public constructor
@@ -35,15 +45,11 @@ public class CrimeDetailFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mCrimeRepository = CrimeRepository.getIsInstance();
 
-        UUID id = (UUID) getActivity().getIntent().getSerializableExtra(CrimeListFragment.EXTRA_CRIME_ID);
-        CrimeRepository crimeRepository = CrimeRepository.getIsInstance();
-        mCrime = crimeRepository.getcrime(id);
-/*
-        mCrime = new Crime();
-        mCrime.setTitle("TESTING THE TITLE");
-        mCrime.setSolved(true);*/
-
+      //  UUID id = (UUID) getActivity().getIntent().getSerializableExtra(CrimeListFragment.EXTRA_CRIME_ID);
+       UUID id = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
+        mCrime = mCrimeRepository.getcrime(id);
     }
 
     @Override

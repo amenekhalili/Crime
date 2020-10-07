@@ -10,7 +10,7 @@ import com.example.crime.R;
 import com.example.crime.controller.Fragment.CrimeDetailFragment;
 
 public  abstract class SingleFragmentAvtivity extends AppCompatActivity {
-   public abstract Fragment CreatFragment();
+   public abstract Fragment CreateFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +25,7 @@ public  abstract class SingleFragmentAvtivity extends AppCompatActivity {
 
             fragmentManager
                     .beginTransaction()
-                    .add(R.id.container_fragment ,CreatFragment())
+                    .add(R.id.container_fragment ,CreateFragment())
                     .commit();
         }
 

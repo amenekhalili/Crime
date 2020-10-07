@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,10 +22,18 @@ import java.util.List;
 
 
 public class CrimeListFragment extends Fragment {
-    public static final String EXTRA_CRIME_ID = "crime.controller.Fragment_EXTRA_CRIME_ID";
+
     private RecyclerView mRecyclerView;
+    private CrimeRepository mCrimeRepository;
 
+    public static CrimeListFragment newInstance() {
 
+        Bundle args = new Bundle();
+
+        CrimeListFragment fragment = new CrimeListFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
     public CrimeListFragment() {
         // Required empty public constructor
     }
@@ -33,6 +42,8 @@ public class CrimeListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mCrimeRepository = CrimeRepository.getIsInstance();
 
     }
 
@@ -48,8 +59,8 @@ public class CrimeListFragment extends Fragment {
     private void initViews() {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        CrimeRepository crimeRepository = CrimeRepository.getIsInstance();
-        List<Crime> crimes = crimeRepository.getCrimes();
+
+        List<Crime> crimes = mCrimeRepository.getCrimes();
         CrimeAdapter crimeAdapter = new CrimeAdapter(crimes);
         mRecyclerView.setAdapter(crimeAdapter);
     }
@@ -58,18 +69,19 @@ public class CrimeListFragment extends Fragment {
 
         private TextView mTextViewTitle;
         private TextView mTextViewDate;
+        private ImageView mImageViewSolved;
         private Crime mCrime;
 
         public CrimeHolder(@NonNull View itemView) {
             super(itemView);
             mTextViewTitle = itemView.findViewById(R.id.row_title_crime);
             mTextViewDate = itemView.findViewById(R.id.row_date_crime);
+            mImageViewSolved = itemView.findViewById(R.id.image_solved);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(getActivity() , CrimeDetailActivity.class);
-                    intent.putExtra(EXTRA_CRIME_ID, mCrime.getId());
+                    Intent intent = CrimeDetailActivity.newIntent(getActivity(),mCrime.getId());
                     startActivity(intent);
                 }
             });
@@ -79,6 +91,7 @@ public class CrimeListFragment extends Fragment {
             mTextViewTitle.setText(crime.getTitle());
             mTextViewDate.setText(crime.getDate().toString());
             mCrime = crime;
+            mImageViewSolved.setVisibility(crime.isSolved() ? View.VISIBLE : View.GONE);
         }
 
 
