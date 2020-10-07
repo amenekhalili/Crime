@@ -1,6 +1,8 @@
 package com.example.crime.controller.Fragment;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import com.example.crime.Model.Crime;
 import com.example.crime.R;
 import com.example.crime.Repository.CrimeRepository;
+import com.example.crime.Repository.IRepository;
 import com.example.crime.controller.Activity.CrimeDetailActivity;
 
 import java.util.UUID;
@@ -25,7 +28,7 @@ public class CrimeDetailFragment extends Fragment {
   private CheckBox mCheckBoxsolved;
     private  Crime mCrime;
     public static final String ARG_CRIME_ID = "ArgcrimeId";
-    private CrimeRepository mCrimeRepository;
+    private IRepository mCrimeRepository;
 
     public static CrimeDetailFragment newInstance(UUID crimeId) {
 
@@ -40,16 +43,23 @@ public class CrimeDetailFragment extends Fragment {
         // Required empty public constructor
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateCrime();
+    }
 
+    private void updateCrime() {
+        mCrimeRepository.updateCrime(mCrime);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mCrimeRepository = CrimeRepository.getIsInstance();
 
-      //  UUID id = (UUID) getActivity().getIntent().getSerializableExtra(CrimeListFragment.EXTRA_CRIME_ID);
        UUID id = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
-        mCrime = mCrimeRepository.getcrime(id);
+        mCrime = mCrimeRepository.getCrime(id);
     }
 
     @Override
@@ -71,10 +81,27 @@ public class CrimeDetailFragment extends Fragment {
 
     private void setlistener() {
 
+        mEditTexttitle.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            mCrime.setTitle(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
         mCheckBoxsolved.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
+                     mCrime.setSolved(isChecked);
             }
         });
 
