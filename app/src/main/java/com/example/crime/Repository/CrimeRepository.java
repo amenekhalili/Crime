@@ -39,6 +39,10 @@ public class CrimeRepository implements IRepository{
     public List<Crime> getCrimes() {
         return mCrimes;
     }
+   @Override
+    public int sizeList(){
+        return mCrimes.size();
+    }
 
     @Override
     public Crime getCrime(UUID uuid) {
@@ -82,4 +86,11 @@ public class CrimeRepository implements IRepository{
         return -1;
     }
 
+    @Override
+    public Crime getCrime(int index) {
+        for (int i = 0; i < mCrimes.size() ; i++) {
+            return mCrimes.get(index);
+        }
+        return null;
+    }
 }

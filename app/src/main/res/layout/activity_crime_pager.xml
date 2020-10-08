@@ -5,6 +5,8 @@
     android:id="@+id/View_pager_Crime"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     tools:context=".controller.Activity.CrimePagerActivity">
+
 
 </androidx.viewpager2.widget.ViewPager2>

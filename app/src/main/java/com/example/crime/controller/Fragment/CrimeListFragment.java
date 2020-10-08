@@ -17,7 +17,6 @@ import com.example.crime.Model.Crime;
 import com.example.crime.R;
 import com.example.crime.Repository.CrimeRepository;
 import com.example.crime.Repository.IRepository;
-import com.example.crime.controller.Activity.CrimeDetailActivity;
 import com.example.crime.controller.Activity.CrimePagerActivity;
 
 import java.util.List;
@@ -27,7 +26,7 @@ public class CrimeListFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private IRepository mCrimeRepository;
-   private   CrimeAdapter crimeAdapter;
+    private CrimeAdapter crimeAdapter;
 
 
     public static CrimeListFragment newInstance() {
@@ -38,6 +37,7 @@ public class CrimeListFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+
     public CrimeListFragment() {
         // Required empty public constructor
     }
@@ -68,10 +68,10 @@ public class CrimeListFragment extends Fragment {
 
     private void updateUI() {
         List<Crime> crimes = mCrimeRepository.getCrimes();
-        if(crimeAdapter == null){
+        if (crimeAdapter == null) {
             crimeAdapter = new CrimeAdapter(crimes);
             mRecyclerView.setAdapter(crimeAdapter);
-        }else{
+        } else {
             crimeAdapter.notifyDataSetChanged();
         }
 
@@ -80,7 +80,7 @@ public class CrimeListFragment extends Fragment {
     private void initViews() {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-     updateUI();
+        updateUI();
 
     }
 
@@ -101,7 +101,7 @@ public class CrimeListFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     //Intent intent = CrimeDetailActivity.newIntent(getActivity(),mCrime.getId());
-                    Intent intent = CrimePagerActivity.newIntent(getActivity() , mCrime.getId());
+                    Intent intent = CrimePagerActivity.newIntent(getActivity(), mCrime.getId());
                     startActivity(intent);
                 }
             });
@@ -113,7 +113,6 @@ public class CrimeListFragment extends Fragment {
             mCrime = crime;
             mImageViewSolved.setVisibility(crime.isSolved() ? View.VISIBLE : View.GONE);
         }
-
 
 
     }

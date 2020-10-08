@@ -25,9 +25,9 @@ public class CrimePagerActivity extends AppCompatActivity {
     private ViewPager2 mViewPager2;
     private IRepository mCrimeRepository;
     private UUID crimeId;
-   public static Intent newIntent(Context context , UUID id){
+   public static Intent newIntent(Context context , UUID crimeId){
         Intent intent = new Intent(context , CrimePagerActivity.class);
-        intent.putExtra(EXTRA_CRIME_ID, id);
+        intent.putExtra(EXTRA_CRIME_ID, crimeId);
         return intent;
     }
 
@@ -41,6 +41,7 @@ public class CrimePagerActivity extends AppCompatActivity {
         initViews();
     }
 
+
     private void findViews() {
         mViewPager2 = findViewById(R.id.View_pager_Crime);
     }
@@ -51,6 +52,8 @@ public class CrimePagerActivity extends AppCompatActivity {
         mViewPager2.setAdapter(crimePagerAdapter);
         int currentIndex = mCrimeRepository.getPosition(crimeId);
         mViewPager2.setCurrentItem(currentIndex);
+        mViewPager2.setPageTransformer( new zoomAnimation());
+
     }
 
     public class crimePagerAdapter extends FragmentStateAdapter {
