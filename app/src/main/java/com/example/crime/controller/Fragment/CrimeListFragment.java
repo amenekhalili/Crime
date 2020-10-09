@@ -32,7 +32,6 @@ public class CrimeListFragment extends Fragment {
     public static CrimeListFragment newInstance() {
 
         Bundle args = new Bundle();
-
         CrimeListFragment fragment = new CrimeListFragment();
         fragment.setArguments(args);
         return fragment;
@@ -100,7 +99,6 @@ public class CrimeListFragment extends Fragment {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //Intent intent = CrimeDetailActivity.newIntent(getActivity(),mCrime.getId());
                     Intent intent = CrimePagerActivity.newIntent(getActivity(), mCrime.getId());
                     startActivity(intent);
                 }

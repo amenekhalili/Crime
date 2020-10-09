@@ -25,11 +25,7 @@ public class CrimeDetailActivity extends SingleFragmentAvtivity {
     @Override
     public Fragment CreateFragment() {
         UUID crimeId = (UUID) getIntent().getSerializableExtra(EXTRA_CRIME_ID );
-      /*  CrimeDetailFragment crimeDetailFragment = new CrimeDetailFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(ARG_CRIME_ID, crimeId);
-        crimeDetailFragment.setArguments(bundle);*/
-         CrimeDetailFragment crimeDetailFragment = CrimeDetailFragment.newInstance(crimeId);
+        CrimeDetailFragment crimeDetailFragment = CrimeDetailFragment.newInstance(crimeId);
         return crimeDetailFragment;
     }
 }
