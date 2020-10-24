@@ -1,5 +1,7 @@
 package com.example.crime.Model;
 
+import com.example.crime.Utils.DataUtils;
+
 import java.util.Date;
 import java.util.UUID;
 
@@ -39,6 +41,6 @@ public class Crime {
 
     public Crime() {
         mId = UUID.randomUUID();
-        mDate = new Date();
+        mDate = DataUtils.randomDate();
     }
 }
