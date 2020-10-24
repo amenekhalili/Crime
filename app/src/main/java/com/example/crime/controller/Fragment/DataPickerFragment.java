@@ -27,6 +27,9 @@ import java.util.GregorianCalendar;
 public class DataPickerFragment extends DialogFragment {
     public static final String ARG_CRIME_DATE = "ARG_CRIME_DATE";
     public static final String EXTRA_USER_SELECTED_DATA = "EXTRA_USER_SELECTED_DATA";
+    public static final String EXTRA_YEAR = "Extra_year";
+    public static final String EXTRA_MONTH_OF_YEAR = "Extra_monthOfYear";
+    public static final String EXTRA_DAY_OF_MONTH = "Extra_dayOfMonth";
     private Date mCrimeDate ;
     private DatePicker mDatePicker;
 
@@ -64,10 +67,10 @@ public class DataPickerFragment extends DialogFragment {
                        int year = mDatePicker.getYear();
                        int monthOfYear = mDatePicker.getMonth();
                        int dayOfMonth = mDatePicker.getDayOfMonth();
-
-                       GregorianCalendar gregorianCalendar = new GregorianCalendar(year , monthOfYear , dayOfMonth);
+                           sendResult(year , monthOfYear , dayOfMonth);
+                     /*  GregorianCalendar gregorianCalendar = new GregorianCalendar(year , monthOfYear , dayOfMonth);
                        Date userSelectedData = gregorianCalendar.getTime();
-                            sendResult(userSelectedData);
+                            sendResult(userSelectedData);*/
 
                    }
                })
@@ -91,12 +94,15 @@ public class DataPickerFragment extends DialogFragment {
         mDatePicker = view.findViewById(R.id.data_picker_crime);
     }
 
-    private void sendResult(Date userSelectedData){
+    private void sendResult(int year , int monthOfYear , int dayOfMonth){
         Fragment fragment = getTargetFragment();
         int requestCode = getTargetRequestCode();
         int resultCode = Activity.RESULT_OK;
         Intent intent = new Intent();
-        intent.putExtra(EXTRA_USER_SELECTED_DATA, userSelectedData);
+        intent.putExtra(EXTRA_YEAR, year);
+        intent.putExtra(EXTRA_MONTH_OF_YEAR, monthOfYear);
+        intent.putExtra(EXTRA_DAY_OF_MONTH, dayOfMonth);
+       // intent.putExtra(EXTRA_USER_SELECTED_DATA, userSelectedData);
         fragment.onActivityResult(requestCode , resultCode , intent);
     }
 }

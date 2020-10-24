@@ -3,6 +3,7 @@ package com.example.crime.controller.Fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -46,13 +47,18 @@ public class CrimeDetailFragment extends Fragment {
     private ImageButton btn_next;
     private UUID id;
     private int currentIndex;
-    private Date mCrimeDate ;
-    private int year;
-    private int monthOfYear;
-    private int dayOfMonth;
-    private int hour;
-    private int minute;
-    private int second;
+    private Date mCrimeDate;
+    private int firstYear;
+    private int firstMonthOfYear;
+    private int firstDayOfMonth;
+    private int firstHour;
+    private int firstMinute;
+    private int firstSecond;
+    private int secondYear ;
+    private  int secondMonthOfYear ;
+    private  int secondDayOfMonth ;
+   private int secondHour ;
+    private int secondMinute ;
 
     private ViewPager2 viewPager2;
 
@@ -107,8 +113,8 @@ public class CrimeDetailFragment extends Fragment {
 
         mEditTexttitle.setText(mCrime.getTitle());
         mCheckBoxsolved.setChecked(mCrime.isSolved());
-        mButtondate.setText( String.format("%02d/%02d/%02d" , year , monthOfYear+1 , dayOfMonth));
-        mButtonTime.setText(String.format("%02d:%02d:%02d" , hour , minute , second));
+        mButtondate.setText(String.format("%02d/%02d/%02d", firstYear, firstMonthOfYear + 1, firstDayOfMonth));
+        mButtonTime.setText(String.format("%02d:%02d:%02d", firstHour, firstMinute, firstSecond));
 
     }
 
@@ -116,13 +122,13 @@ public class CrimeDetailFragment extends Fragment {
         Calendar calendar = Calendar.getInstance();
         mCrimeDate = mCrime.getDate();
         calendar.setTime(mCrimeDate);
-        year = calendar.get(Calendar.YEAR);
-        monthOfYear = calendar.get(Calendar.MONTH);
-        dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+        firstYear = calendar.get(Calendar.YEAR);
+        firstMonthOfYear = calendar.get(Calendar.MONTH);
+        firstDayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
 
-        hour = calendar.get(Calendar.HOUR);
-        minute = calendar.get(Calendar.MINUTE);
-        second = calendar.get(Calendar.SECOND);
+        firstHour = calendar.get(Calendar.HOUR);
+        firstMinute = calendar.get(Calendar.MINUTE);
+        firstSecond = calendar.get(Calendar.SECOND);
     }
 
     private void setlistener() {
@@ -226,34 +232,50 @@ public class CrimeDetailFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+
+
         if (resultCode != Activity.RESULT_OK || data == null)
             return;
         ;
 
         if (requestCode == REQUEST_CODE_DATA_PICKER) {
-            Date userSelectedDate = (Date) data.getSerializableExtra(DataPickerFragment.EXTRA_USER_SELECTED_DATA);
-            updateCrimeDate(userSelectedDate);
+         /*   Date userSelectedDate = (Date) data.getSerializableExtra(DataPickerFragment.EXTRA_USER_SELECTED_DATA);
+            updateCrimeDate(userSelectedDate);*/
+            secondYear = data.getIntExtra(DataPickerFragment.EXTRA_YEAR, 0);
+            secondMonthOfYear = data.getIntExtra(DataPickerFragment.EXTRA_MONTH_OF_YEAR, 0);
+            secondDayOfMonth = data.getIntExtra(DataPickerFragment.EXTRA_DAY_OF_MONTH, 0);
+            mButtondate.setText(String.format("%02d/%02d/%02d", secondYear, secondMonthOfYear + 1, secondDayOfMonth));
         }
 
-        if(requestCode == REQUEST_CODE_TIME_PICKER){
+        if (requestCode == REQUEST_CODE_TIME_PICKER) {
 
-          int  hour = data.getIntExtra(TimePickerFragment.EXTRA_HOUR_DATE, 0);
-          int minute = data.getIntExtra(TimePickerFragment.EXTRA_MINUTE_DATE , 0);
-          updateCrimeTime(hour , minute);
+            secondHour = data.getIntExtra(TimePickerFragment.EXTRA_HOUR_DATE, 0);
+            secondMinute = data.getIntExtra(TimePickerFragment.EXTRA_MINUTE_DATE, 0);
+            mButtonTime.setText(String.format("%02d:%02d:%02d", secondHour, secondMinute, 0));
+
+        }
+        setDate(secondYear, secondMonthOfYear , secondDayOfMonth , secondHour , secondMinute);
+
+
+    }
+
+    private void setDate(int year, int month, int day, int hour, int minute) {
+        Calendar cal = Calendar.getInstance();
+
+        if(year == 0  && month == 0  && day ==  0){
+            cal.set(firstYear , firstMonthOfYear , firstDayOfMonth , hour , minute , 0);
+        }else  if(hour == 0 && minute == 0){
+            cal.set(year , month , day , firstHour , firstMinute , 0);
+        }else{
+            cal.set(year , month , day , hour , minute , 0);
         }
 
-    }
-    private void updateCrimeTime(int hour , int minute) {
-        second = 0;
-        mButtonTime.setText(String.format("%02d:%02d:%02d" , hour , minute , second));
-    }
-
-
-    private void updateCrimeDate(Date userSelectedDate) {
-        mCrime.setDate(userSelectedDate);
+        Date date =  cal.getTime();
+        mCrime.setDate(date);
         updateCrime();
-        extractDate();
-        mButtondate.setText(String.format("%02d/%02d/%02d" , year ,monthOfYear+1 , dayOfMonth));
+
 
     }
+
+
 }
