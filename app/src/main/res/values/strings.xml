@@ -7,5 +7,7 @@
     </string>
     <string name="subtitle_item_show">Show subtitle</string>
     <string name="subtitle_item_hide">Hide subtitle</string>
+    <string name="menu_iteme_remove_crime">Remove</string>
+    <string name="no_crime_is_available">No Crime Is Available !!!</string>
 
 </resources>

@@ -7,6 +7,9 @@ import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -15,6 +18,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
@@ -23,6 +27,7 @@ import com.example.crime.Model.Crime;
 import com.example.crime.R;
 import com.example.crime.Repository.CrimeRepository;
 import com.example.crime.Repository.IRepository;
+import com.example.crime.controller.Activity.CrimelistActivity;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -94,6 +99,7 @@ public class CrimeDetailFragment extends Fragment {
         id = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
         mCrime = mCrimeRepository.getCrime(id);
         currentIndex = mCrimeRepository.getPosition(id);
+        setHasOptionsMenu(true);
 
 
     }
@@ -106,6 +112,24 @@ public class CrimeDetailFragment extends Fragment {
         initViews();
         setlistener();
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_detail_fragment , menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case  R.id.menu_item_remove_crime :
+                CrimeRepository.getIsInstance().deleteCrime(mCrime);
+                Intent intent = CrimelistActivity.newIntent(getActivity());
+                startActivity(intent);
+                default:
+                return super.onOptionsItemSelected(item);
+        }
+
     }
 
     private void initViews() {
@@ -239,8 +263,6 @@ public class CrimeDetailFragment extends Fragment {
         ;
 
         if (requestCode == REQUEST_CODE_DATA_PICKER) {
-         /*   Date userSelectedDate = (Date) data.getSerializableExtra(DataPickerFragment.EXTRA_USER_SELECTED_DATA);
-            updateCrimeDate(userSelectedDate);*/
             secondYear = data.getIntExtra(DataPickerFragment.EXTRA_YEAR, 0);
             secondMonthOfYear = data.getIntExtra(DataPickerFragment.EXTRA_MONTH_OF_YEAR, 0);
             secondDayOfMonth = data.getIntExtra(DataPickerFragment.EXTRA_DAY_OF_MONTH, 0);

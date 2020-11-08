@@ -65,19 +65,6 @@ public class CrimePagerActivity extends AppCompatActivity {
         final List<Crime> crimes = mCrimeRepository.getCrimes();
         final crimePagerAdapter crimePagerAdapter = new crimePagerAdapter(this , crimes);
         mViewPager2.setAdapter(crimePagerAdapter);
-
-   /*   mViewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-           @Override
-           public void onPageSelected(int position) {
-               if (position == 0){
-                   mViewPager2.setCurrentItem(0);
-                mViewPager2.setAdapter(crimePagerAdapter);
-               } else if (position == 99){
-                   mViewPager2.setCurrentItem(1);
-               }
-           }
-       });*/
-
         currentIndex = mCrimeRepository.getPosition(crimeId);
         mViewPager2.setCurrentItem(currentIndex );
         mViewPager2.setPageTransformer(new zoomAnimation());
