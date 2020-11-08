@@ -3,4 +3,9 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="DataPicker_Title"></string>
+    <string name="menu_add_item_crime">Add Crime
+    </string>
+    <string name="subtitle_item_show">Show subtitle</string>
+    <string name="subtitle_item_hide">Hide subtitle</string>
+
 </resources>

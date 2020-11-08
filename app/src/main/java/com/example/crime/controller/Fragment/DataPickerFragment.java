@@ -68,10 +68,6 @@ public class DataPickerFragment extends DialogFragment {
                        int monthOfYear = mDatePicker.getMonth();
                        int dayOfMonth = mDatePicker.getDayOfMonth();
                            sendResult(year , monthOfYear , dayOfMonth);
-                     /*  GregorianCalendar gregorianCalendar = new GregorianCalendar(year , monthOfYear , dayOfMonth);
-                       Date userSelectedData = gregorianCalendar.getTime();
-                            sendResult(userSelectedData);*/
-
                    }
                })
                .setNegativeButton(android.R.string.cancel , null)

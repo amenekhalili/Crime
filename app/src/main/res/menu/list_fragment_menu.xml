@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/meu_item_add_crime"
+        android:icon="@drawable/ic_plus"
+        android:title="@string/menu_add_item_crime"
+        app:showAsAction="ifRoom|withText" />
+    <item
+        android:id="@+id/menu_item_subtitle_crime"
+        android:title="@string/subtitle_item_show"
+        app:showAsAction="ifRoom|withText" />
+</menu>
