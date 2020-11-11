@@ -9,5 +9,8 @@
     <string name="subtitle_item_hide">Hide subtitle</string>
     <string name="menu_iteme_remove_crime">Remove</string>
     <string name="no_crime_is_available">No Crime Is Available !!!</string>
+    <string name="multiple_remove_crimes">Remove Crimes</string>
+    <string name="select_all">Select All</string>
+    <string name="unselect_all">Unselect All</string>
 
 </resources>

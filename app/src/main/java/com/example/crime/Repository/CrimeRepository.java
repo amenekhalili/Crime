@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class CrimeRepository implements IRepository{
-    private static final int CRIME_SIZE = 2 ;
+    private static final int CRIME_SIZE =4;
    private static CrimeRepository sIsInstance;
 
     public static CrimeRepository getIsInstance() {
@@ -27,7 +27,6 @@ public class CrimeRepository implements IRepository{
             Crime crime = new Crime();
             crime.setTitle("Crime# " + (i+1));
             crime.setSolved( i % 2 == 0);
-
             mCrimes.add(crime);
         }
 

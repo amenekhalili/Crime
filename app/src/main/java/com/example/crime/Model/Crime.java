@@ -10,6 +10,15 @@ public class Crime {
     private String mTitle;
     private Date mDate;
     private boolean mSolved;
+    private boolean mChecked;
+
+    public boolean isChecked() {
+        return mChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        mChecked = checked;
+    }
 
     public UUID getId() {
         return mId;
@@ -42,5 +51,6 @@ public class Crime {
     public Crime() {
         mId = UUID.randomUUID();
         mDate = DataUtils.randomDate();
+        mChecked = false;
     }
 }

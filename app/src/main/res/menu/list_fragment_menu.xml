@@ -11,4 +11,15 @@
         android:id="@+id/menu_item_subtitle_crime"
         android:title="@string/subtitle_item_show"
         app:showAsAction="ifRoom|withText" />
+    <item
+        android:id="@+id/remove_multiple_Crime"
+        android:icon="@drawable/ic_delete"
+        android:title="@string/multiple_remove_crimes"
+        app:showAsAction="ifRoom|withText" />
+    <item
+        android:id="@+id/menu_sselect_all"
+        android:title="@string/select_all" />
+    <item
+        android:id="@+id/menu_unselect_all"
+        android:title="@string/unselect_all" />
 </menu>

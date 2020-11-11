@@ -8,6 +8,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,6 +24,7 @@ import com.example.crime.R;
 import com.example.crime.Repository.CrimeRepository;
 import com.example.crime.Repository.IRepository;
 import com.example.crime.controller.Activity.CrimePagerActivity;
+import com.example.crime.controller.Activity.CrimelistActivity;
 
 import java.util.List;
 
@@ -33,6 +36,8 @@ public class CrimeListFragment extends Fragment {
     private IRepository mCrimeRepository;
     private CrimeAdapter crimeAdapter;
     private boolean isSubtitleVisible = false;
+    private CheckBox mCheckBoxDelete;
+    private int Clicked = 0;
 
 
     public static CrimeListFragment newInstance() {
@@ -80,7 +85,7 @@ public class CrimeListFragment extends Fragment {
         switch (item.getItemId()){
             case R.id.meu_item_add_crime:
                 Crime crime = new Crime();
-                CrimeRepository.getIsInstance().insertCrime(crime);
+                mCrimeRepository.insertCrime(crime);
 
                 Intent intent = CrimePagerActivity.newIntent(getActivity() , crime.getId());
                 startActivity(intent);
@@ -90,9 +95,40 @@ public class CrimeListFragment extends Fragment {
                 updateSubtitle();
                 setTxtSubTitle(item);
                 return true;
+            case R.id.remove_multiple_Crime:
+                for (int i = 0 ; i < mCrimeRepository.sizeList() ; i++) {
+
+                    //Crime crime1 = mCrimeRepository.getCrime(i);
+                        if(mCrimeRepository.getCrime(i).isChecked()){
+                          mCrimeRepository.deleteCrime(mCrimeRepository.getCrime(i));
+                        }
+                }
+                setListPage();
+                return true;
+            case R.id.menu_sselect_all:
+                for (int i = 0; i < mCrimeRepository.sizeList() ; i++) {
+                    mCrimeRepository.getCrime(i).setChecked(true);
+
+
+                }
+                setListPage();
+                return true;
+            case R.id.menu_unselect_all:
+                for (int i = 0; i < mCrimeRepository.sizeList() ; i++) {
+                     mCrimeRepository.getCrime(i).setChecked(false);
+                }
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void setListPage() {
+        if(mCrimeRepository.sizeList() == 0){
+            Intent intent1 = CrimelistActivity.newIntent(getActivity());
+            startActivity(intent1);
+        }
+        updateUI();
     }
 
     private void setTxtSubTitle(@NonNull MenuItem item) {
@@ -132,7 +168,6 @@ public class CrimeListFragment extends Fragment {
 
     private void initViews() {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
         updateUI();
 
     }
@@ -149,12 +184,21 @@ public class CrimeListFragment extends Fragment {
             mTextViewTitle = itemView.findViewById(R.id.row_title_crime);
             mTextViewDate = itemView.findViewById(R.id.row_date_crime);
             mImageViewSolved = itemView.findViewById(R.id.image_solved);
+            mCheckBoxDelete = itemView.findViewById(R.id.checkBox_delete);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = CrimePagerActivity.newIntent(getActivity(), mCrime.getId());
                     startActivity(intent);
+                }
+            });
+
+            mCheckBoxDelete.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+            {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                   mCrime.setChecked(true);
                 }
             });
         }
