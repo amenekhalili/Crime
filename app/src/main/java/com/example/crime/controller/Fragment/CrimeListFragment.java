@@ -16,17 +16,20 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.crime.Model.Crime;
 import com.example.crime.R;
-import com.example.crime.Repository.CrimeRepository;
+import com.example.crime.Repository.CrimeDBRepository;
 import com.example.crime.Repository.IRepository;
 import com.example.crime.controller.Activity.CrimePagerActivity;
 import com.example.crime.controller.Activity.CrimelistActivity;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 
 public class CrimeListFragment extends Fragment {
@@ -36,8 +39,7 @@ public class CrimeListFragment extends Fragment {
     private IRepository mCrimeRepository;
     private CrimeAdapter crimeAdapter;
     private boolean isSubtitleVisible = false;
-    private CheckBox mCheckBoxDelete;
-    private int Clicked = 0;
+
 
 
     public static CrimeListFragment newInstance() {
@@ -57,7 +59,7 @@ public class CrimeListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mCrimeRepository = CrimeRepository.getIsInstance();
+        mCrimeRepository = CrimeDBRepository.getIsInstance(getActivity());
         setHasOptionsMenu(true);
            if(savedInstanceState != null)
                isSubtitleVisible = savedInstanceState.getBoolean(SUBTITLE_VISIBILITY);
@@ -96,27 +98,24 @@ public class CrimeListFragment extends Fragment {
                 setTxtSubTitle(item);
                 return true;
             case R.id.remove_multiple_Crime:
-                for (int i = 0 ; i < mCrimeRepository.sizeList() ; i++) {
+                List<Crime> crimes = mCrimeRepository.getCrimes();
+                for (int i = 0; i < crimes.size() ; i++) {
+                    UUID id = crimes.get(i).getId();
+                    Crime crime1 = mCrimeRepository.getCrime(id);
+                    if(crime1.isChecked()){
+                        mCrimeRepository.deleteCrime(crime1);
+                    }
 
-                    //Crime crime1 = mCrimeRepository.getCrime(i);
-                        if(mCrimeRepository.getCrime(i).isChecked()){
-                          mCrimeRepository.deleteCrime(mCrimeRepository.getCrime(i));
-                        }
                 }
+
                 setListPage();
                 return true;
             case R.id.menu_sselect_all:
-                for (int i = 0; i < mCrimeRepository.sizeList() ; i++) {
-                    mCrimeRepository.getCrime(i).setChecked(true);
 
-
-                }
                 setListPage();
                 return true;
             case R.id.menu_unselect_all:
-                for (int i = 0; i < mCrimeRepository.sizeList() ; i++) {
-                     mCrimeRepository.getCrime(i).setChecked(false);
-                }
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -125,8 +124,13 @@ public class CrimeListFragment extends Fragment {
 
     private void setListPage() {
         if(mCrimeRepository.sizeList() == 0){
-            Intent intent1 = CrimelistActivity.newIntent(getActivity());
-            startActivity(intent1);
+            /*Intent intent1 = CrimelistActivity.newIntent(getActivity());
+            startActivity(intent1);*/
+            FragmentManager fragmentManager =  getActivity().getSupportFragmentManager();
+            Empty_RecyclerView_Fragment empty_recyclerView_fragment = Empty_RecyclerView_Fragment.newInstance();
+            fragmentManager.beginTransaction().
+                    replace(R.id.container_fragment , empty_recyclerView_fragment).
+                    commit();
         }
         updateUI();
     }
@@ -137,7 +141,7 @@ public class CrimeListFragment extends Fragment {
     }
 
     private void updateSubtitle() {
-        int size = CrimeRepository.getIsInstance().sizeList();
+        int size = mCrimeRepository.sizeList();
         String numberOfCrimes = isSubtitleVisible ? size + " Crime" : null;
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.getSupportActionBar().setSubtitle(numberOfCrimes);
@@ -161,6 +165,7 @@ public class CrimeListFragment extends Fragment {
             crimeAdapter = new CrimeAdapter(crimes);
             mRecyclerView.setAdapter(crimeAdapter);
         } else {
+            crimeAdapter.setCrimes(crimes);
             crimeAdapter.notifyDataSetChanged();
         }
 
@@ -177,6 +182,7 @@ public class CrimeListFragment extends Fragment {
         private TextView mTextViewTitle;
         private TextView mTextViewDate;
         private ImageView mImageViewSolved;
+        private CheckBox mCheckBoxDelete;
         private Crime mCrime;
 
         public CrimeHolder(@NonNull View itemView) {
@@ -198,7 +204,7 @@ public class CrimeListFragment extends Fragment {
             {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                   mCrime.setChecked(true);
+                  mCrime.setChecked(isChecked);
                 }
             });
         }
@@ -208,6 +214,7 @@ public class CrimeListFragment extends Fragment {
             mTextViewDate.setText(crime.getDate().toString());
             mCrime = crime;
             mImageViewSolved.setVisibility(crime.isSolved() ? View.VISIBLE : View.GONE);
+            mCheckBoxDelete.setSelected(crime.isChecked() ? true : false);
         }
 
 

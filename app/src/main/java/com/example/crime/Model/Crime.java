@@ -49,8 +49,20 @@ public class Crime {
     }
 
     public Crime() {
-        mId = UUID.randomUUID();
-        mDate = DataUtils.randomDate();
-        mChecked = false;
+       this(UUID.randomUUID());
+
+    }
+
+    public Crime(UUID id){
+        mId = id;
+        mDate = new Date();
+    }
+
+    public Crime(UUID id, String title, Date date, boolean solved, boolean checked) {
+        mId = id;
+        mTitle = title;
+        mDate = date;
+        mSolved = solved;
+        mChecked = checked;
     }
 }

@@ -98,7 +98,6 @@ public class DataPickerFragment extends DialogFragment {
         intent.putExtra(EXTRA_YEAR, year);
         intent.putExtra(EXTRA_MONTH_OF_YEAR, monthOfYear);
         intent.putExtra(EXTRA_DAY_OF_MONTH, dayOfMonth);
-       // intent.putExtra(EXTRA_USER_SELECTED_DATA, userSelectedData);
         fragment.onActivityResult(requestCode , resultCode , intent);
     }
 }

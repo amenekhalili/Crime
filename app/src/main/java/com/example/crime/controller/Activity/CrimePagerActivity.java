@@ -4,21 +4,16 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
-import androidx.viewpager2.adapter.FragmentViewHolder;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ImageButton;
 
 import com.example.crime.Model.Crime;
 import com.example.crime.R;
-import com.example.crime.Repository.CrimeRepository;
+import com.example.crime.Repository.CrimeDBRepository;
 import com.example.crime.Repository.IRepository;
 import com.example.crime.controller.Fragment.CrimeDetailFragment;
 
@@ -45,7 +40,7 @@ public class CrimePagerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crime_pager);
-        mCrimeRepository = CrimeRepository.getIsInstance();
+        mCrimeRepository = CrimeDBRepository.getIsInstance(this);
         crimeId = (UUID) getIntent().getSerializableExtra(EXTRA_CRIME_ID);
 
 

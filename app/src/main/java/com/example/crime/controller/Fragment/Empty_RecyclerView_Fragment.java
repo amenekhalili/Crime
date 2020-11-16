@@ -12,12 +12,14 @@ import android.widget.ImageButton;
 
 import com.example.crime.Model.Crime;
 import com.example.crime.R;
-import com.example.crime.Repository.CrimeRepository;
+import com.example.crime.Repository.CrimeDBRepository;
+import com.example.crime.Repository.IRepository;
 import com.example.crime.controller.Activity.CrimePagerActivity;
 import com.example.crime.controller.Activity.CrimelistActivity;
 
 public class Empty_RecyclerView_Fragment extends Fragment {
     private ImageButton mImageButton;
+    private IRepository mCrimeRepository;
 
 
     public Empty_RecyclerView_Fragment() {
@@ -33,7 +35,7 @@ public class Empty_RecyclerView_Fragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        mCrimeRepository = CrimeDBRepository.getIsInstance(getActivity());
     }
 
     @Override
@@ -54,7 +56,7 @@ public class Empty_RecyclerView_Fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Crime crime = new Crime();
-                CrimeRepository.getIsInstance().insertCrime(crime);
+               mCrimeRepository.insertCrime(crime);
                 Intent intent = CrimePagerActivity.newIntent(getActivity() , crime.getId());
                 startActivity(intent);
             }
@@ -64,7 +66,7 @@ public class Empty_RecyclerView_Fragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if(CrimeRepository.getIsInstance().sizeList() !=  0){
+        if(mCrimeRepository.sizeList() !=  0){
             Intent intent = CrimelistActivity.newIntent(getActivity());
             startActivity(intent);
         }

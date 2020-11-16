@@ -3,7 +3,6 @@ package com.example.crime.controller.Fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -25,7 +24,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.crime.Model.Crime;
 import com.example.crime.R;
-import com.example.crime.Repository.CrimeRepository;
+import com.example.crime.Repository.CrimeDBRepository;
 import com.example.crime.Repository.IRepository;
 import com.example.crime.controller.Activity.CrimelistActivity;
 
@@ -95,7 +94,7 @@ public class CrimeDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        mCrimeRepository = CrimeRepository.getIsInstance();
+        mCrimeRepository = CrimeDBRepository.getIsInstance(getActivity());
         id = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
         mCrime = mCrimeRepository.getCrime(id);
         currentIndex = mCrimeRepository.getPosition(id);
@@ -123,7 +122,7 @@ public class CrimeDetailFragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case  R.id.menu_item_remove_crime :
-                CrimeRepository.getIsInstance().deleteCrime(mCrime);
+                mCrimeRepository.deleteCrime(mCrime);
                 Intent intent = CrimelistActivity.newIntent(getActivity());
                 startActivity(intent);
                 default:
