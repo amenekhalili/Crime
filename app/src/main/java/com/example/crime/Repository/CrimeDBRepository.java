@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.example.crime.Model.Crime;
 import com.example.crime.dataBase.CrimeDBHelper;
 import com.example.crime.dataBase.CrimeDBSchema;
-import com.example.crime.dataBase.CrimeDBSchema.CrimeTable.cols;
+import static com.example.crime.dataBase.CrimeDBSchema.CrimeTable.cols;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,7 +32,7 @@ public class CrimeDBRepository implements IRepository {
 
     private CrimeDBRepository(Context context) {
         mContext = context.getApplicationContext();
-        CrimeDBHelper crimeDBHelper = new CrimeDBHelper(context);
+        CrimeDBHelper crimeDBHelper = new CrimeDBHelper(mContext);
 
         mDatabase = crimeDBHelper.getWritableDatabase();
     }
@@ -153,34 +153,7 @@ public class CrimeDBRepository implements IRepository {
         return -1;
     }
 
-   /* @Override
-    public Crime getCrime(int index) {
-        String where = cols.UUID + " = ?";
-        String[] whereArgs = new String[]{String.valueOf(index)};
 
-        Cursor cursor = mDatabase.query(
-                CrimeDBSchema.CrimeTable.NAME,
-                null,
-                where,
-                whereArgs,
-                null,
-                null,
-                null);
-
-        if (cursor == null || cursor.getCount() == 0)
-            return null;
-        try {
-            cursor.moveToFirst();
-            Crime crime = ExtractCrimeFromCursor(cursor);
-            return crime;
-
-        } finally {
-            cursor.close();
-        }
-
-
-    }
-*/
     @Override
     public int sizeList() {
         List<Crime> crimes = getCrimes();

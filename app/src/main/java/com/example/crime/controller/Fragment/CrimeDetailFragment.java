@@ -188,9 +188,8 @@ public class CrimeDetailFragment extends Fragment {
                 dataPickerFragment.setTargetFragment(CrimeDetailFragment.this
                         , REQUEST_CODE_DATA_PICKER);
 
-                dataPickerFragment.show(getActivity().
-
-                        getSupportFragmentManager(), DATA_PICKER_TAG);
+                        dataPickerFragment.show(getActivity().
+                                getSupportFragmentManager(), DATA_PICKER_TAG);
 
             }
         });
@@ -227,7 +226,7 @@ public class CrimeDetailFragment extends Fragment {
         btn_doubleRight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewPager2.setCurrentItem(99);
+                viewPager2.setCurrentItem(mCrimeRepository.sizeList());
             }
         });
 

@@ -12,12 +12,14 @@ public class Crime {
     private boolean mSolved;
     private boolean mChecked;
 
-    public boolean isChecked() {
-        return mChecked;
-    }
+
 
     public void setChecked(boolean checked) {
         mChecked = checked;
+    }
+
+    public boolean isChecked() {
+        return mChecked;
     }
 
     public UUID getId() {

@@ -26,6 +26,9 @@ public class CrimeDBHelper extends SQLiteOpenHelper {
         sbQuery.append(");");
         db.execSQL(sbQuery.toString());
 
+
+
+
     }
 
     @Override

@@ -17,4 +17,17 @@ public class CrimeDBSchema {
             public static final String CHECKED = "checked";
         }
     }
+
+
+    public static final class UserTable{
+
+        public static final String Name = "UserTable";
+
+        public static final class cols{
+            public static final String ID = "id";
+            public static final String User_Name = "user_name";
+            public static final String Pass_Word = "password";
+        }
+
+    }
 }

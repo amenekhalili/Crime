@@ -101,21 +101,33 @@ public class CrimeListFragment extends Fragment {
                 List<Crime> crimes = mCrimeRepository.getCrimes();
                 for (int i = 0; i < crimes.size() ; i++) {
                     UUID id = crimes.get(i).getId();
-                    Crime crime1 = mCrimeRepository.getCrime(id);
-                    if(crime1.isChecked()){
-                        mCrimeRepository.deleteCrime(crime1);
-                    }
-
+                    if(mCrimeRepository.getCrime(id).isChecked())
+                     mCrimeRepository.deleteCrime(crimes.get(i));
                 }
+
 
                 setListPage();
                 return true;
             case R.id.menu_sselect_all:
+                List<Crime> crimes1 = mCrimeRepository.getCrimes();
+
+                for (int i = 0; i < crimes1.size() ; i++) {
+                    UUID id = crimes1.get(i).getId();
+                    Crime crime1 = mCrimeRepository.getCrime(id);
+                    crime1.setChecked(true);
+                }
 
                 setListPage();
                 return true;
             case R.id.menu_unselect_all:
 
+                  List<Crime> crimes2 = mCrimeRepository.getCrimes();
+
+                for (int i = 0; i < crimes2.size() ; i++) {
+                    UUID id = crimes2.get(i).getId();
+                    Crime crime1 = mCrimeRepository.getCrime(id);
+                    crime1.setChecked(false);
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -124,8 +136,7 @@ public class CrimeListFragment extends Fragment {
 
     private void setListPage() {
         if(mCrimeRepository.sizeList() == 0){
-            /*Intent intent1 = CrimelistActivity.newIntent(getActivity());
-            startActivity(intent1);*/
+
             FragmentManager fragmentManager =  getActivity().getSupportFragmentManager();
             Empty_RecyclerView_Fragment empty_recyclerView_fragment = Empty_RecyclerView_Fragment.newInstance();
             fragmentManager.beginTransaction().
@@ -157,6 +168,7 @@ public class CrimeListFragment extends Fragment {
         super.onResume();
         updateUI();
         updateSubtitle();
+
     }
 
     private void updateUI() {
@@ -204,7 +216,7 @@ public class CrimeListFragment extends Fragment {
             {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                  mCrime.setChecked(isChecked);
+                    mCrimeRepository.getCrime(mCrime.getId()).setChecked(isChecked);
                 }
             });
         }
