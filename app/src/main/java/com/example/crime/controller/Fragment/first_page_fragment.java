@@ -11,14 +11,17 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.crime.Model.User;
 import com.example.crime.R;
+import com.example.crime.Repository.UserDBRepository;
 import com.example.crime.controller.Activity.LoginActivity;
 import com.example.crime.controller.Activity.SignupActivity;
-
+import com.example.crime.Repository.IRepositoryUser;
 
 public class first_page_fragment extends Fragment {
     private Button mButtonLogin;
     private Button mButtonSignUp;
+    private IRepositoryUser mUserDBRepository;
 
 
     public static first_page_fragment newInstance() {
@@ -31,6 +34,8 @@ public class first_page_fragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mUserDBRepository = UserDBRepository.getIsInstance(getActivity());
 
     }
 
@@ -51,8 +56,9 @@ public class first_page_fragment extends Fragment {
         mButtonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "Login Clicked", Toast.LENGTH_SHORT).show();
-                Intent intent = LoginActivity.newIntent(getActivity());
+                User user = new User();
+                mUserDBRepository.insertUser(user);
+                Intent intent = LoginActivity.newIntent(getActivity() , user.getUUID());
                 startActivity(intent);
             }
         });
