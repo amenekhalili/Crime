@@ -28,10 +28,10 @@ public class CrimeDBHelper extends SQLiteOpenHelper {
     private StringBuilder UserTable() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("CREATE TABLE " + CrimeDBSchema.UserTable.Name + " (");
-        stringBuilder.append(columns.ID + "INTEGER PRIMARY KEY AUTOINCREMENT,");
+        stringBuilder.append(columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT,");
         stringBuilder.append(columns.UUID + " TEXT NOT NULL,");
-        stringBuilder.append(columns.User_Name + "TEXT NOT NULL , ");
-        stringBuilder.append(columns.Pass_Word + "TEXT NOT NULL");
+        stringBuilder.append(columns.User_Name + " TEXT  , ");
+        stringBuilder.append(columns.Pass_Word + " TEXT ");
         stringBuilder.append(");");
         return stringBuilder;
     }

@@ -6,9 +6,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.example.crime.Model.Crime;
+import com.example.crime.Model.User;
 import com.example.crime.dataBase.CrimeDBHelper;
 import com.example.crime.dataBase.CrimeDBSchema;
 import static com.example.crime.dataBase.CrimeDBSchema.CrimeTable.cols;
+
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -159,4 +161,7 @@ public class CrimeDBRepository implements IRepository {
         List<Crime> crimes = getCrimes();
         return crimes.size();
     }
+
+
+
 }

@@ -1,7 +1,7 @@
 package com.example.crime.Repository;
 
 import com.example.crime.Model.Crime;
-import com.example.crime.Model.User;
+
 
 import java.util.List;
 import java.util.UUID;
@@ -14,6 +14,5 @@ public interface IRepository {
     void deleteCrime(Crime crime);
     int getPosition(UUID id);
     int sizeList();
-
 
 }

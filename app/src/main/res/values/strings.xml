@@ -11,9 +11,9 @@
     <string name="no_crime_is_available">No Crime Is Available !!!</string>
     <string name="multiple_remove_crimes">Remove Crimes</string>
     <string name="select_all">Select All</string>
-    <string name="unselect_all">Unselect All</string>
+    <string name="unselect_all">UnSelect All</string>
     <string name="login_txt">Do you have account for login?</string>
-    <string name="make_account">Do you want to make a new acoount?</string>
+    <string name="make_account">Do you want to make a new account?</string>
     <string name="login">LOGIN</string>
     <string name="signup">SIGNUP</string>
     <string name="Sign_Up_User_Name">Enter UserName for signUp</string>

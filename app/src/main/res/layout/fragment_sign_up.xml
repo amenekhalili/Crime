@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal|center_vertical"
     android:orientation="vertical"
-    tools:context=".controller.Fragment.SignUpFragment">
+    tools:context=".controller.Fragment.Login_Fragment">
 
 
     <TextView
@@ -15,6 +15,7 @@
         android:text="@string/Sign_Up_User_Name" />
 
     <EditText
+        android:id="@+id/edittxt_signup_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"></EditText>
 
@@ -25,6 +26,7 @@
         android:text="@string/Sign_Up_Pass_Word" />
 
     <EditText
+        android:id="@+id/edittxt_signup_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"></EditText>
 

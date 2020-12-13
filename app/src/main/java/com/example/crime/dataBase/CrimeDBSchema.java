@@ -21,7 +21,7 @@ public class CrimeDBSchema {
 
     public static final class UserTable{
 
-        public static final String Name = "UserTable";
+        public static final String Name = "User_Table";
 
         public static final class columns{
             public static final String ID = "id";

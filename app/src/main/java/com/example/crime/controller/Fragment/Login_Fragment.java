@@ -11,26 +11,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
-import com.example.crime.Model.User;
 import com.example.crime.R;
 
-import java.util.UUID;
 
-import com.example.crime.Repository.IRepositoryUser;
-import com.example.crime.Repository.UserDBRepository;
-
-public class LoginFragment extends Fragment {
-    public static final String ARG_ID = "ARG_ID";
+public class Login_Fragment extends Fragment {
     private EditText mEditTextUserName;
     private EditText mEditTextPassword;
-    private User mUser;
-    private UUID id;
-    private IRepositoryUser mIRepositoryUser;
 
-    public static LoginFragment newInstance(UUID uuid) {
-        LoginFragment fragment = new LoginFragment();
+
+    public static Login_Fragment newInstance() {
+        Login_Fragment fragment = new Login_Fragment();
         Bundle args = new Bundle();
-        args.putSerializable(ARG_ID,uuid );
+
         fragment.setArguments(args);
         return fragment;
     }
@@ -38,22 +30,21 @@ public class LoginFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mIRepositoryUser = UserDBRepository.getIsInstance(getActivity());
-      id = (UUID) getArguments().getSerializable(ARG_ID);
-      mUser = mIRepositoryUser.getUser(id);
 
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-       View view =  inflater.inflate(R.layout.fragment_login, container, false);
+        View view =  inflater.inflate(R.layout.fragment_login, container, false);
         findViews(view);
         setListener();
-
-
         return view;
+    }
+
+    private void findViews(View view) {
+        mEditTextUserName = view.findViewById(R.id.editText_login_UserName);
+        mEditTextPassword = view.findViewById(R.id.editText_login_PassWord);
     }
 
     private void setListener() {
@@ -65,7 +56,7 @@ public class LoginFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-               mUser.setUserName(s.toString());
+
             }
 
             @Override
@@ -82,7 +73,7 @@ public class LoginFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-               mUser.setPassWord(s.toString());
+
             }
 
             @Override
@@ -92,8 +83,6 @@ public class LoginFragment extends Fragment {
         });
     }
 
-    private void findViews(View view) {
-        mEditTextUserName = view.findViewById(R.id.editText_login_UserName);
-        mEditTextPassword = view.findViewById(R.id.editText_login_PassWord);
-    }
+
+
 }
