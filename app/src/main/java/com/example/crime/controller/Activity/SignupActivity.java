@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 
-import com.example.crime.controller.Fragment.Login_Fragment;
 import com.example.crime.controller.Fragment.SignUpFragment;
 
 import java.util.UUID;

@@ -14,4 +14,6 @@ public interface UserIRepository {
     void deleteUser(User user);
     void UpdateUser(User user);
     int sizeList();
+    User validUser(String password);
+
 }

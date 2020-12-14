@@ -145,5 +145,31 @@ public class UserDBRepository implements UserIRepository{
       return users.size();
     }
 
+    @Override
+    public User validUser(String password) {
+        String where = CrimeDBSchema.UserTable.columns.Pass_Word + " = ?";
+        String[] whereArgs = new String[]{password};
+
+        Cursor cursor = mDatabase.query(
+                CrimeDBSchema.UserTable.Name,
+                null,
+                where,
+                whereArgs,
+                null,
+                null,
+                null);
+
+        if (cursor == null || cursor.getCount() == 0)
+            return null;
+        try {
+            cursor.moveToFirst();
+            User user = ExtractUserFromCursor(cursor);
+            return user;
+
+        } finally {
+            cursor.close();
+        }
+    }
+
     // the end of user method.
 }

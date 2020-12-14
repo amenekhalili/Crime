@@ -35,20 +35,24 @@ import java.util.UUID;
 public class CrimeListFragment extends Fragment {
 
     public static final String SUBTITLE_VISIBILITY = "subtitleVisibility";
+    public static final String ARG_USERNAME = "ARG_USERNAME";
     private RecyclerView mRecyclerView;
     private IRepository mCrimeRepository;
     private CrimeAdapter crimeAdapter;
     private boolean isSubtitleVisible = false;
+        private String UserName;
 
 
-
-    public static CrimeListFragment newInstance() {
+    public static CrimeListFragment newInstance(String UserName) {
 
         Bundle args = new Bundle();
+        args.putString(ARG_USERNAME, UserName);
         CrimeListFragment fragment = new CrimeListFragment();
         fragment.setArguments(args);
         return fragment;
     }
+
+
 
     public CrimeListFragment() {
         // Required empty public constructor
@@ -60,6 +64,7 @@ public class CrimeListFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         mCrimeRepository = CrimeDBRepository.getIsInstance(getActivity());
+        UserName = getArguments().getString(ARG_USERNAME , null);
         setHasOptionsMenu(true);
            if(savedInstanceState != null)
                isSubtitleVisible = savedInstanceState.getBoolean(SUBTITLE_VISIBILITY);
@@ -138,7 +143,7 @@ public class CrimeListFragment extends Fragment {
         if(mCrimeRepository.sizeList() == 0){
 
             FragmentManager fragmentManager =  getActivity().getSupportFragmentManager();
-            Empty_RecyclerView_Fragment empty_recyclerView_fragment = Empty_RecyclerView_Fragment.newInstance();
+            Empty_RecyclerView_Fragment empty_recyclerView_fragment = Empty_RecyclerView_Fragment.newInstance(null);
             fragmentManager.beginTransaction().
                     replace(R.id.container_fragment , empty_recyclerView_fragment).
                     commit();
@@ -149,6 +154,8 @@ public class CrimeListFragment extends Fragment {
     private void setTxtSubTitle(@NonNull MenuItem item) {
         item.setTitle(isSubtitleVisible ? R.string.subtitle_item_hide :
                 R.string.subtitle_item_show);
+
+      //  item.setTitle(UserName);
     }
 
     private void updateSubtitle() {
@@ -156,6 +163,7 @@ public class CrimeListFragment extends Fragment {
         String numberOfCrimes = isSubtitleVisible ? size + " Crime" : null;
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.getSupportActionBar().setSubtitle(numberOfCrimes);
+        activity.getSupportActionBar().setSubtitle(UserName);
     }
 
     @Override

@@ -25,9 +25,10 @@ public class Empty_RecyclerView_Fragment extends Fragment {
     public Empty_RecyclerView_Fragment() {
         // Required empty public constructor
     }
-    public static Empty_RecyclerView_Fragment newInstance() {
+    public static Empty_RecyclerView_Fragment newInstance(String UserName) {
         Empty_RecyclerView_Fragment fragment = new Empty_RecyclerView_Fragment();
         Bundle args = new Bundle();
+        args.putString("ARG_USERNAME" , UserName);
         fragment.setArguments(args);
         return fragment;
     }

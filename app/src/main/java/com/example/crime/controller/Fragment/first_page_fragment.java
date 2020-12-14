@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
@@ -13,14 +15,21 @@ import com.example.crime.Model.User;
 import com.example.crime.R;
 import com.example.crime.Repository.UserDBRepository;
 import com.example.crime.Repository.UserIRepository;
-import com.example.crime.controller.Activity.LoginActivity;
+import com.example.crime.controller.Activity.CrimePagerActivity;
+import com.example.crime.controller.Activity.CrimelistActivity;
 import com.example.crime.controller.Activity.SignupActivity;
+
+import java.util.List;
 
 public class first_page_fragment extends Fragment {
     private Button mButtonLogin;
     private Button mButtonSignUp;
     private UserIRepository mUserDBRepository;
-
+    private EditText mEditTextUserName;
+    private EditText mEditTextPassword;
+    private String UserName;
+    private String Password;
+    private boolean flagValidUser = false;
 
     public static first_page_fragment newInstance() {
         first_page_fragment fragment = new first_page_fragment();
@@ -47,14 +56,26 @@ public class first_page_fragment extends Fragment {
 
         return view;
     }
-
+    private void findViews(View view) {
+        mButtonLogin = view.findViewById(R.id.btn_login);
+        mButtonSignUp = view.findViewById(R.id.btn_signup);
+        mEditTextUserName = view.findViewById(R.id.userName_login);
+        mEditTextPassword = view.findViewById(R.id.password_login);
+    }
     private void setListener() {
 
         mButtonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = LoginActivity.newIntent(getActivity());
-                startActivity(intent);
+                UserName = mEditTextUserName.getText().toString();
+                Password = mEditTextPassword.getText().toString();
+                User user = mUserDBRepository.validUser(Password);
+                if(user != null){
+                    Intent intent = CrimelistActivity.newIntent(getActivity() , user.getUserName());
+                    startActivity(intent);
+                }else{
+                    Toast.makeText(getActivity(), "INVALID USER!!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -69,8 +90,5 @@ public class first_page_fragment extends Fragment {
         });
     }
 
-    private void findViews(View view) {
-        mButtonLogin = view.findViewById(R.id.btn_login);
-        mButtonSignUp = view.findViewById(R.id.btn_signup);
-    }
+
 }
