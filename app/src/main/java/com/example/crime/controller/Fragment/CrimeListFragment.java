@@ -120,6 +120,7 @@ public class CrimeListFragment extends Fragment {
                     UUID id = crimes1.get(i).getId();
                     Crime crime1 = mCrimeRepository.getCrime(id);
                     crime1.setChecked(true);
+                    mCrimeRepository.updateCrime(crime1);
                 }
 
                 setListPage();
@@ -132,6 +133,7 @@ public class CrimeListFragment extends Fragment {
                     UUID id = crimes2.get(i).getId();
                     Crime crime1 = mCrimeRepository.getCrime(id);
                     crime1.setChecked(false);
+                    mCrimeRepository.updateCrime(crime1);
                 }
                 return true;
             default:
@@ -154,8 +156,6 @@ public class CrimeListFragment extends Fragment {
     private void setTxtSubTitle(@NonNull MenuItem item) {
         item.setTitle(isSubtitleVisible ? R.string.subtitle_item_hide :
                 R.string.subtitle_item_show);
-
-      //  item.setTitle(UserName);
     }
 
     private void updateSubtitle() {
@@ -224,7 +224,9 @@ public class CrimeListFragment extends Fragment {
             {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    mCrimeRepository.getCrime(mCrime.getId()).setChecked(isChecked);
+
+                    mCrime.setChecked(isChecked);
+                    mCrimeRepository.updateCrime(mCrime);
                 }
             });
         }

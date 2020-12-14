@@ -3,6 +3,7 @@ package com.example.crime.controller.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -18,9 +19,10 @@ import com.example.crime.controller.Activity.CrimePagerActivity;
 import com.example.crime.controller.Activity.CrimelistActivity;
 
 public class Empty_RecyclerView_Fragment extends Fragment {
+    public static final String ARG_USERNAME = "ARG_USERNAME";
     private ImageButton mImageButton;
     private IRepository mCrimeRepository;
-
+     private String UserName;
 
     public Empty_RecyclerView_Fragment() {
         // Required empty public constructor
@@ -28,7 +30,7 @@ public class Empty_RecyclerView_Fragment extends Fragment {
     public static Empty_RecyclerView_Fragment newInstance(String UserName) {
         Empty_RecyclerView_Fragment fragment = new Empty_RecyclerView_Fragment();
         Bundle args = new Bundle();
-        args.putString("ARG_USERNAME" , UserName);
+        args.putString(ARG_USERNAME, UserName);
         fragment.setArguments(args);
         return fragment;
     }
@@ -37,6 +39,12 @@ public class Empty_RecyclerView_Fragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mCrimeRepository = CrimeDBRepository.getIsInstance(getActivity());
+        UserName = getArguments().getString(ARG_USERNAME , null);
+
+
+
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        activity.getSupportActionBar().setSubtitle(UserName);
     }
 
     @Override

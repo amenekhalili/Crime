@@ -166,6 +166,7 @@ public class CrimeDetailFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 mCrime.setTitle(s.toString());
+                mCrimeRepository.updateCrime(mCrime);
             }
 
             @Override
@@ -178,8 +179,12 @@ public class CrimeDetailFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 mCrime.setSolved(isChecked);
+                mCrimeRepository.updateCrime(mCrime);
             }
         });
+
+
+
 
         mButtondate.setOnClickListener(new View.OnClickListener() {
             @Override
