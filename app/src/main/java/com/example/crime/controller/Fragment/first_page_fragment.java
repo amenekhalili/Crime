@@ -70,10 +70,10 @@ public class first_page_fragment extends Fragment {
                 UserName = mEditTextUserName.getText().toString();
                 Password = mEditTextPassword.getText().toString();
                 User user = mUserDBRepository.validUser(Password);
-                if(user != null){
+                if(user != null  && UserName.equals(user.getUserName())){
                     Intent intent = CrimelistActivity.newIntent(getActivity() , user.getUserName());
                     startActivity(intent);
-                }else{
+                }else if (user == null || !UserName.equals(user.getUserName())){
                     Toast.makeText(getActivity(), "INVALID USER!!", Toast.LENGTH_SHORT).show();
                 }
             }

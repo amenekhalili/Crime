@@ -121,6 +121,7 @@ public class CrimeListFragment extends Fragment {
                     Crime crime1 = mCrimeRepository.getCrime(id);
                     crime1.setChecked(true);
                     mCrimeRepository.updateCrime(crime1);
+
                 }
 
                 setListPage();
@@ -134,6 +135,7 @@ public class CrimeListFragment extends Fragment {
                     Crime crime1 = mCrimeRepository.getCrime(id);
                     crime1.setChecked(false);
                     mCrimeRepository.updateCrime(crime1);
+
                 }
                 return true;
             default:
@@ -152,6 +154,8 @@ public class CrimeListFragment extends Fragment {
         }
         updateUI();
     }
+
+
 
     private void setTxtSubTitle(@NonNull MenuItem item) {
         item.setTitle(isSubtitleVisible ? R.string.subtitle_item_hide :

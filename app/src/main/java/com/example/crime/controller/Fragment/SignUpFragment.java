@@ -72,12 +72,16 @@ public class SignUpFragment extends Fragment {
                 String UserName = mEditTextUserName.getText().toString();
                 String Password = mEditTextPassword.getText().toString();
 
-            mUser.setUserName(UserName);
-            mUser.setPassWord(Password);
-              mIRepositoryUser.UpdateUser(mUser);
+                User user = mIRepositoryUser.validUser(Password);
+                if(user == null){
+                    mUser.setUserName(UserName);
+                    mUser.setPassWord(Password);
+                    mIRepositoryUser.UpdateUser(mUser);
+                    Toast.makeText(getActivity(), " you make account successfully ", Toast.LENGTH_SHORT).show();
+                }else if (user != null){
+                    Toast.makeText(getActivity(), "Please Enter a UNIQUE Password!!!", Toast.LENGTH_SHORT).show();
+                }
 
-
-                Toast.makeText(getActivity(), " you make account successfully ", Toast.LENGTH_SHORT).show();
             }
         });
     }
