@@ -3,6 +3,7 @@ package com.example.crime.Repository;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.CursorWrapper;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.example.crime.Model.User;
@@ -44,29 +45,22 @@ public class UserDBRepository implements UserIRepository{
     public List<User> getUsers() {
         List<User> users = new ArrayList<>();
 
-        Cursor cursor = mDatabase.query(
-                CrimeDBSchema.UserTable.Name,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null);
-        if (cursor == null || cursor.getCount() == 0)
+        UserCursorWrapper userCursorWrapper = queryCursorWrapper(null, null);
+        if (userCursorWrapper == null || userCursorWrapper.getCount() == 0)
             return users;
         try {
-            cursor.moveToFirst();
+            userCursorWrapper.moveToFirst();
 
-            while (!cursor.isAfterLast()) {
-                User user = ExtractUserFromCursor(cursor);
+            while (!userCursorWrapper.isAfterLast()) {
+                User user = userCursorWrapper.getUser();
 
                 users.add(user);
-                cursor.moveToNext();
+                userCursorWrapper.moveToNext();
 
             }
 
         } finally {
-            cursor.close();
+            userCursorWrapper.close();
 
         }
 
@@ -78,24 +72,17 @@ public class UserDBRepository implements UserIRepository{
         String where = CrimeDBSchema.UserTable.columns.UUID + " = ?";
         String[] whereArgs = new String[]{uuid.toString()};
 
-        Cursor cursor = mDatabase.query(
-                CrimeDBSchema.UserTable.Name,
-                null,
-                where,
-                whereArgs,
-                null,
-                null,
-                null);
+        UserCursorWrapper userCursorWrapper = queryCursorWrapper(where, whereArgs);
 
-        if (cursor == null || cursor.getCount() == 0)
+        if (userCursorWrapper == null || userCursorWrapper.getCount() == 0)
             return null;
         try {
-            cursor.moveToFirst();
-            User user = ExtractUserFromCursor(cursor);
+            userCursorWrapper.moveToFirst();
+            User user = userCursorWrapper.getUser();
             return user;
 
         } finally {
-            cursor.close();
+            userCursorWrapper.close();
         }
 
     }
@@ -122,12 +109,12 @@ public class UserDBRepository implements UserIRepository{
     }
 
 
-    private User ExtractUserFromCursor(Cursor cursor) {
+   /* private User ExtractUserFromCursor(Cursor cursor) {
         UUID uuid = UUID.fromString(cursor.getString(cursor.getColumnIndex(CrimeDBSchema.UserTable.columns.UUID)));
         String UserName = cursor.getString(cursor.getColumnIndex(CrimeDBSchema.UserTable.columns.User_Name));
         String PassWord = cursor.getString(cursor.getColumnIndex(CrimeDBSchema.UserTable.columns.Pass_Word));
         return new User(uuid , UserName , PassWord);
-    }
+    }*/
 
     private ContentValues getContentValues(User user) {
         ContentValues values = new ContentValues();
@@ -150,7 +137,23 @@ public class UserDBRepository implements UserIRepository{
         String where = CrimeDBSchema.UserTable.columns.Pass_Word + " = ?";
         String[] whereArgs = new String[]{password};
 
-        Cursor cursor = mDatabase.query(
+       UserCursorWrapper userCursorWrapper = queryCursorWrapper(where, whereArgs);
+
+        if (userCursorWrapper == null || userCursorWrapper.getCount() == 0)
+            return null;
+        try {
+            userCursorWrapper.moveToFirst();
+            User user = userCursorWrapper.getUser();
+            return user;
+
+        } finally {
+            userCursorWrapper.close();
+        }
+    }
+
+    private UserCursorWrapper queryCursorWrapper(String where, String[] whereArgs) {
+
+       Cursor cursor =  mDatabase.query(
                 CrimeDBSchema.UserTable.Name,
                 null,
                 where,
@@ -159,16 +162,8 @@ public class UserDBRepository implements UserIRepository{
                 null,
                 null);
 
-        if (cursor == null || cursor.getCount() == 0)
-            return null;
-        try {
-            cursor.moveToFirst();
-            User user = ExtractUserFromCursor(cursor);
-            return user;
-
-        } finally {
-            cursor.close();
-        }
+       UserCursorWrapper userCursorWrapper = new UserCursorWrapper(cursor);
+       return userCursorWrapper;
     }
 
     // the end of user method.
