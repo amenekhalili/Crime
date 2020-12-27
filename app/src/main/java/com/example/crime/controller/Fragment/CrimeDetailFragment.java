@@ -147,8 +147,8 @@ public class CrimeDetailFragment extends Fragment {
         mCheckBoxsolved.setChecked(mCrime.isSolved());
         mButtondate.setText(String.format("%02d/%02d/%02d", firstYear, firstMonthOfYear + 1, firstDayOfMonth));
         mButtonTime.setText(String.format("%02d:%02d:%02d", firstHour, firstMinute, firstSecond));
-        mButtonChooseSuspect.setText(R.string.crime_suspect_text);
-        mButtonReportSuspect.setText(R.string.crime_report_text);
+         if(mCrime.getSuspect() != null)
+             mButtonChooseSuspect.setText(mCrime.getSuspect());
 
     }
 
@@ -368,7 +368,7 @@ public class CrimeDetailFragment extends Fragment {
                 String suspect = cursor.getString(0);
                 mCrime.setSuspect(suspect);
                 mButtonChooseSuspect.setText(suspect);
-
+                  mCrimeRepository.updateCrime(mCrime);
                 }finally {
                 cursor.close();
             }
