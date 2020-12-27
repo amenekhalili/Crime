@@ -16,6 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="2dp"
         android:padding="2dp"
+        android:textColor="#0C0C0C"
         android:text="TITLE" />
 
     <EditText
@@ -23,6 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="2dp"
+
         android:hint="Enter a title for the crime"
         android:padding="2dp"></EditText>
 
@@ -32,19 +34,30 @@
         android:layout_height="wrap_content"
         android:layout_margin="2dp"
         android:padding="2dp"
+        android:textColor="#0C0C0C"
         android:text="DETAILS" />
 
     <Button
         android:id="@+id/btn_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="2dp"
-        android:padding="2dp" />
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
+        android:background="#CEC1E6"
+        android:padding="2dp" />/>
 
     <Button
         android:id="@+id/btn_time"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
+        android:background="#CEC1E6" />/>
 
     <CheckBox
         android:id="@+id/checkbox_solved"
@@ -57,7 +70,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="100dp"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -85,6 +97,38 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_fast_forward_double_right_arrows" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btn_suspect"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginRight="20dp"
+            android:text="@string/crime_suspect_text"
+            android:background="#A1BCD3"/>/>
+
+        <Button
+            android:id="@+id/btn_report_suspect"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginRight="20dp"
+            android:text="@string/crime_report_text"
+            android:background="#A1BCD3"/>
     </LinearLayout>
 
 </LinearLayout>

@@ -27,8 +27,9 @@ public class CrimeCursorWrapper extends CursorWrapper {
         Date date = new Date(getLong(getColumnIndex(cols.DATE)));
         boolean solvedInt = getInt(getColumnIndex(cols.SOLVED)) == 0 ? false : true;
         boolean checkedInt = getInt(getColumnIndex(cols.CHECKED)) == 0 ? false : true;
+        String suspect = getString(getColumnIndex(cols.SUSPECT));
 
-        return new Crime(uuid, title, date, solvedInt, checkedInt);
+        return new Crime(uuid, title, date, solvedInt, checkedInt , suspect);
     }
 
 

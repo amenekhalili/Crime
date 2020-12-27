@@ -2,7 +2,10 @@ package com.example.crime.controller.Fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -16,6 +19,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,6 +32,7 @@ import com.example.crime.Repository.CrimeDBRepository;
 import com.example.crime.Repository.IRepository;
 import com.example.crime.controller.Activity.CrimelistActivity;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
@@ -38,6 +43,7 @@ public class CrimeDetailFragment extends Fragment {
     public static final int REQUEST_CODE_DATA_PICKER = 0;
     public static final String TIME_PICKER_TAG = "Time_picker_Tag";
     public static final int REQUEST_CODE_TIME_PICKER = 1;
+    public static final int REQUEST_SELECT_CONTACT = 2;
     private EditText mEditTexttitle;
     private Button mButtondate;
     private Button mButtonTime;
@@ -65,6 +71,9 @@ public class CrimeDetailFragment extends Fragment {
     private int secondMinute ;
 
     private ViewPager2 viewPager2;
+
+    private Button mButtonChooseSuspect;
+    private Button mButtonReportSuspect;
 
     public static CrimeDetailFragment newInstance(UUID crimeId) {
 
@@ -138,6 +147,8 @@ public class CrimeDetailFragment extends Fragment {
         mCheckBoxsolved.setChecked(mCrime.isSolved());
         mButtondate.setText(String.format("%02d/%02d/%02d", firstYear, firstMonthOfYear + 1, firstDayOfMonth));
         mButtonTime.setText(String.format("%02d:%02d:%02d", firstHour, firstMinute, firstSecond));
+        mButtonChooseSuspect.setText(R.string.crime_suspect_text);
+        mButtonReportSuspect.setText(R.string.crime_report_text);
 
     }
 
@@ -241,8 +252,61 @@ public class CrimeDetailFragment extends Fragment {
                 viewPager2.setCurrentItem(0);
             }
         });
+
+
+        mButtonChooseSuspect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               selectContact();
+            }
+        });
+
+        mButtonReportSuspect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                shareReportCrime();
+            }
+        });
     }
 
+    private void shareReportCrime() {
+        Intent sendIntent = new Intent(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT , getReport());
+        sendIntent.putExtra(Intent.EXTRA_SUBJECT , getString(R.string.crime_report_subject));
+        sendIntent.setType("text/plain");
+        Intent shareIntent = Intent.createChooser(sendIntent,getString(R.string.send_report));
+        if(sendIntent.resolveActivity(getActivity().getPackageManager()) != null)
+             startActivity(shareIntent);
+    }
+
+    private void selectContact(){
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType(ContactsContract.Contacts.CONTENT_TYPE);
+        if(intent.resolveActivity(getActivity().getPackageManager()) != null)
+            startActivityForResult(intent , REQUEST_SELECT_CONTACT);
+    }
+
+    private String getReport(){
+        String title = mCrime.getTitle();
+
+         SimpleDateFormat simpleDateFormat  = new SimpleDateFormat("yyyy/MM/dd - HH:mm:SS");
+         String dateString = simpleDateFormat.format(mCrime.getDate());
+
+         String solvedString = mCrime.isSolved() ?
+                 getString(R.string.crime_report_solved) :
+                 getString(R.string.crime_report_unsolved);
+         String suspectString = mCrime.getSuspect() == null ?
+                 getString(R.string.crime_report_no_suspect) :
+                 getString(R.string.crime_report_suspect , mCrime.getSuspect());
+
+        String report = getString(R.string.crime_report ,
+                title ,
+                dateString
+                ,solvedString,
+                suspectString);
+        return report;
+     }
 
     private void findViews(View view) {
         mEditTexttitle = view.findViewById(R.id.Edittext_title);
@@ -254,6 +318,8 @@ public class CrimeDetailFragment extends Fragment {
         btn_pre = view.findViewById(R.id.btn_pre);
         viewPager2 = getActivity().findViewById(R.id.View_pager_Crime);
         mButtonTime = view.findViewById(R.id.btn_time);
+        mButtonChooseSuspect = view.findViewById(R.id.btn_suspect);
+        mButtonReportSuspect = view.findViewById(R.id.btn_report_suspect);
 
     }
 
@@ -282,6 +348,34 @@ public class CrimeDetailFragment extends Fragment {
         setDate(secondYear, secondMonthOfYear , secondDayOfMonth , secondHour , secondMinute);
 
 
+        if( requestCode == REQUEST_SELECT_CONTACT ){
+            Uri contactUri = data.getData();
+            String[] projection = new String[]{ContactsContract.Contacts.DISPLAY_NAME};
+
+            Cursor cursor = getActivity().getContentResolver().query(
+                    contactUri ,
+                    projection ,
+                    null ,
+                    null ,
+                    null
+            );
+
+            if(cursor == null || cursor.getCount() == 0)
+                return;
+
+            try {
+                cursor.moveToFirst();
+                String suspect = cursor.getString(0);
+                mCrime.setSuspect(suspect);
+                mButtonChooseSuspect.setText(suspect);
+
+                }finally {
+                cursor.close();
+            }
+
+        }
+
+
     }
 
     private void setDate(int year, int month, int day, int hour, int minute) {
@@ -298,8 +392,6 @@ public class CrimeDetailFragment extends Fragment {
         Date date =  cal.getTime();
         mCrime.setDate(date);
         updateCrime();
-
-
     }
 
 

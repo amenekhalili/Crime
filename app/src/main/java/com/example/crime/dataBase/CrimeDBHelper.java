@@ -44,7 +44,8 @@ public class CrimeDBHelper extends SQLiteOpenHelper {
         sbQuery.append(cols.TITLE + " TEXT, ");
         sbQuery.append(cols.DATE + " TEXT, ");
         sbQuery.append(cols.SOLVED + " INTEGER,");
-        sbQuery.append(cols.CHECKED + " INTEGER");
+        sbQuery.append(cols.CHECKED + " INTEGER, ");
+        sbQuery.append(cols.SUSPECT + " TEXT ");
         sbQuery.append(");");
         return sbQuery;
     }

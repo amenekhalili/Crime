@@ -65,15 +65,7 @@ public class CrimeDBRepository implements IRepository {
         return crimes;
     }
 
-/*    private Crime ExtractCrimeFromCursor(Cursor cursor) {
-        UUID uuid = UUID.fromString(cursor.getString(cursor.getColumnIndex(cols.UUID)));
-        String title = cursor.getString(cursor.getColumnIndex(cols.TITLE));
-        Date date = new Date(cursor.getLong(cursor.getColumnIndex(cols.DATE)));
-        boolean solvedInt = cursor.getInt(cursor.getColumnIndex(cols.SOLVED)) == 0 ? false : true;
-        boolean checkedInt = cursor.getInt(cursor.getColumnIndex(cols.CHECKED)) == 0 ? false : true;
 
-        return new Crime(uuid, title, date, solvedInt, checkedInt);
-    }*/
 
     @Override
     public Crime getCrime(UUID uuid) {
@@ -116,7 +108,7 @@ public class CrimeDBRepository implements IRepository {
     public void insertCrime(Crime crime) {
         ContentValues values = getContentValues(crime);
 
-        mDatabase.insert(CrimeDBSchema.CrimeTable.NAME, null, values);
+         mDatabase.insert(CrimeDBSchema.CrimeTable.NAME, null, values);
     }
 
     private ContentValues getContentValues(Crime crime) {
@@ -126,6 +118,7 @@ public class CrimeDBRepository implements IRepository {
         values.put(cols.DATE, crime.getDate().getTime());
         values.put(cols.SOLVED, crime.isSolved() ? 1 : 0);
         values.put(cols.CHECKED, crime.isChecked() ? 1 : 0);
+        values.put(cols.SUSPECT , crime.getSuspect());
         return values;
     }
 

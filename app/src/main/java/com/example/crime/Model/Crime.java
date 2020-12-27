@@ -11,8 +11,15 @@ public class Crime {
     private Date mDate;
     private boolean mSolved;
     private boolean mChecked;
+    private String mSuspect;
 
+    public String getSuspect() {
+        return mSuspect;
+    }
 
+    public void setSuspect(String suspect) {
+        mSuspect = suspect;
+    }
 
     public void setChecked(boolean checked) {
         mChecked = checked;
@@ -60,11 +67,12 @@ public class Crime {
         mDate = new Date();
     }
 
-    public Crime(UUID id, String title, Date date, boolean solved, boolean checked) {
+    public Crime(UUID id, String title, Date date, boolean solved, boolean checked , String suspect) {
         mId = id;
         mTitle = title;
         mDate = date;
         mSolved = solved;
         mChecked = checked;
+        mSuspect = suspect;
     }
 }
