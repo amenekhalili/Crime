@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ShareCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -271,13 +272,17 @@ public class CrimeDetailFragment extends Fragment {
     }
 
     private void shareReportCrime() {
-        Intent sendIntent = new Intent(Intent.ACTION_SEND);
+
+   /*     Intent sendIntent = new Intent(Intent.ACTION_SEND);
         sendIntent.putExtra(Intent.EXTRA_TEXT , getReport());
         sendIntent.putExtra(Intent.EXTRA_SUBJECT , getString(R.string.crime_report_subject));
         sendIntent.setType("text/plain");
         Intent shareIntent = Intent.createChooser(sendIntent,getString(R.string.send_report));
         if(sendIntent.resolveActivity(getActivity().getPackageManager()) != null)
-             startActivity(shareIntent);
+             startActivity(shareIntent);*/
+
+        ShareCompat.IntentBuilder.from(getActivity()).setText(getReport()).setType("text/plain").startChooser();
+
     }
 
     private void selectContact(){
