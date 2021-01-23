@@ -1,11 +1,14 @@
 package com.example.crime.controller.Fragment;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -23,6 +26,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.ShareCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
@@ -38,6 +42,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
+import static android.content.Context.TELEPHONY_SERVICE;
+import static androidx.core.content.ContextCompat.getSystemService;
+
 
 public class CrimeDetailFragment extends Fragment {
     public static final String DATA_PICKER_TAG = "Data_picker_Tag";
@@ -45,6 +52,8 @@ public class CrimeDetailFragment extends Fragment {
     public static final String TIME_PICKER_TAG = "Time_picker_Tag";
     public static final int REQUEST_CODE_TIME_PICKER = 1;
     public static final int REQUEST_SELECT_CONTACT = 2;
+    private static final int MY_PERMISSIONS_REQUEST_CALL_PHONE = 3;
+    public static final int REQUEST_SELECT_PHONE_NUMBER = 4;
     private EditText mEditTexttitle;
     private Button mButtondate;
     private Button mButtonTime;
@@ -65,16 +74,20 @@ public class CrimeDetailFragment extends Fragment {
     private int firstHour;
     private int firstMinute;
     private int firstSecond;
-    private int secondYear ;
-    private  int secondMonthOfYear ;
-    private  int secondDayOfMonth ;
-   private int secondHour ;
-    private int secondMinute ;
-
+    private int secondYear;
+    private int secondMonthOfYear;
+    private int secondDayOfMonth;
+    private int secondHour;
+    private int secondMinute;
     private ViewPager2 viewPager2;
-
     private Button mButtonChooseSuspect;
     private Button mButtonReportSuspect;
+    private Button mButtonCall;
+    private Button mButtonDial;
+    private String suspectName ;
+
+    String PhoneNumberContact = "";
+    
 
     public static CrimeDetailFragment newInstance(UUID crimeId) {
 
@@ -111,6 +124,7 @@ public class CrimeDetailFragment extends Fragment {
         setHasOptionsMenu(true);
 
 
+         checkForPhonePermission();
     }
 
     @Override
@@ -120,22 +134,23 @@ public class CrimeDetailFragment extends Fragment {
 
         initViews();
         setlistener();
+
         return view;
     }
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_detail_fragment , menu);
+        inflater.inflate(R.menu.menu_detail_fragment, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
-            case  R.id.menu_item_remove_crime :
+        switch (item.getItemId()) {
+            case R.id.menu_item_remove_crime:
                 mCrimeRepository.deleteCrime(mCrime);
                 Intent intent = CrimelistActivity.newIntent(getActivity());
                 startActivity(intent);
-                default:
+            default:
                 return super.onOptionsItemSelected(item);
         }
 
@@ -148,9 +163,19 @@ public class CrimeDetailFragment extends Fragment {
         mCheckBoxsolved.setChecked(mCrime.isSolved());
         mButtondate.setText(String.format("%02d/%02d/%02d", firstYear, firstMonthOfYear + 1, firstDayOfMonth));
         mButtonTime.setText(String.format("%02d:%02d:%02d", firstHour, firstMinute, firstSecond));
-         if(mCrime.getSuspect() != null)
-             mButtonChooseSuspect.setText(mCrime.getSuspect());
+        if (mCrime.getSuspect() != null)
+            mButtonChooseSuspect.setText(mCrime.getSuspect());
 
+
+        if(mCrime.getSuspect() == null){
+            mButtonCall.setEnabled(false);
+            mButtonDial.setEnabled(false);
+        }
+
+        if(PhoneNumberContact != null){
+            mButtonDial.setText( "Dial : " + PhoneNumberContact);
+            mButtonCall.setText("Call : " + PhoneNumberContact);
+        }
     }
 
     private void extractDate() {
@@ -165,6 +190,23 @@ public class CrimeDetailFragment extends Fragment {
         firstMinute = calendar.get(Calendar.MINUTE);
         firstSecond = calendar.get(Calendar.SECOND);
     }
+
+
+    private void checkForPhonePermission(){
+        if(ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CALL_PHONE) !=
+                PackageManager.PERMISSION_GRANTED){
+              ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.CALL_PHONE},
+                      MY_PERMISSIONS_REQUEST_CALL_PHONE);
+        }
+        else{
+
+        }
+
+        ActivityCompat.requestPermissions(getActivity() ,new String[]{ Manifest.permission.WRITE_CONTACTS , Manifest.permission.READ_CONTACTS} , PackageManager.PERMISSION_GRANTED);
+    }
+
+
+
 
     private void setlistener() {
 
@@ -196,8 +238,6 @@ public class CrimeDetailFragment extends Fragment {
         });
 
 
-
-
         mButtondate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -205,8 +245,8 @@ public class CrimeDetailFragment extends Fragment {
                 dataPickerFragment.setTargetFragment(CrimeDetailFragment.this
                         , REQUEST_CODE_DATA_PICKER);
 
-                        dataPickerFragment.show(getActivity().
-                                getSupportFragmentManager(), DATA_PICKER_TAG);
+                dataPickerFragment.show(getActivity().
+                        getSupportFragmentManager(), DATA_PICKER_TAG);
 
             }
         });
@@ -258,7 +298,8 @@ public class CrimeDetailFragment extends Fragment {
         mButtonChooseSuspect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               selectContact();
+                selectContact();
+                selectContactCall();
             }
         });
 
@@ -267,10 +308,45 @@ public class CrimeDetailFragment extends Fragment {
             public void onClick(View v) {
 
                 shareReportCrime();
+
+            }
+        });
+
+
+
+
+
+        mButtonDial.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialPhoneNumber(PhoneNumberContact);
+            }
+        });
+
+        mButtonCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                callPhoneNumber(PhoneNumberContact);
             }
         });
     }
 
+
+    public void callPhoneNumber(String phoneNumber){
+        Intent intent = new Intent(Intent.ACTION_CALL);
+        intent.setData(Uri.parse("tel:" + phoneNumber));
+        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivity(intent);
+        }
+    }
+
+    public void dialPhoneNumber(String phoneNumber) {
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:" + phoneNumber));
+        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivity(intent);
+        }
+    }
     private void shareReportCrime() {
 
    /*     Intent sendIntent = new Intent(Intent.ACTION_SEND);
@@ -285,33 +361,46 @@ public class CrimeDetailFragment extends Fragment {
 
     }
 
-    private void selectContact(){
+    private void selectContact() {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType(ContactsContract.Contacts.CONTENT_TYPE);
-        if(intent.resolveActivity(getActivity().getPackageManager()) != null)
-            startActivityForResult(intent , REQUEST_SELECT_CONTACT);
+        if (intent.resolveActivity(getActivity().getPackageManager()) != null)
+            startActivityForResult(intent, REQUEST_SELECT_CONTACT);
+
+
     }
 
-    private String getReport(){
+
+    public void selectContactCall() {
+        // Start an activity for the user to pick a phone number from contacts
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
+        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivityForResult(intent, REQUEST_SELECT_PHONE_NUMBER);
+        }
+    }
+
+
+    private String getReport() {
         String title = mCrime.getTitle();
 
-         SimpleDateFormat simpleDateFormat  = new SimpleDateFormat("yyyy/MM/dd - HH:mm:SS");
-         String dateString = simpleDateFormat.format(mCrime.getDate());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm:SS");
+        String dateString = simpleDateFormat.format(mCrime.getDate());
 
-         String solvedString = mCrime.isSolved() ?
-                 getString(R.string.crime_report_solved) :
-                 getString(R.string.crime_report_unsolved);
-         String suspectString = mCrime.getSuspect() == null ?
-                 getString(R.string.crime_report_no_suspect) :
-                 getString(R.string.crime_report_suspect , mCrime.getSuspect());
+        String solvedString = mCrime.isSolved() ?
+                getString(R.string.crime_report_solved) :
+                getString(R.string.crime_report_unsolved);
+        String suspectString = mCrime.getSuspect() == null ?
+                getString(R.string.crime_report_no_suspect) :
+                getString(R.string.crime_report_suspect, mCrime.getSuspect());
 
-        String report = getString(R.string.crime_report ,
-                title ,
+        String report = getString(R.string.crime_report,
+                title,
                 dateString
-                ,solvedString,
+                , solvedString,
                 suspectString);
         return report;
-     }
+    }
 
     private void findViews(View view) {
         mEditTexttitle = view.findViewById(R.id.Edittext_title);
@@ -325,8 +414,11 @@ public class CrimeDetailFragment extends Fragment {
         mButtonTime = view.findViewById(R.id.btn_time);
         mButtonChooseSuspect = view.findViewById(R.id.btn_suspect);
         mButtonReportSuspect = view.findViewById(R.id.btn_report_suspect);
+        mButtonDial = view.findViewById(R.id.btn_dial);
+        mButtonCall = view.findViewById(R.id.btn_call);
 
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -350,51 +442,66 @@ public class CrimeDetailFragment extends Fragment {
             mButtonTime.setText(String.format("%02d:%02d:%02d", secondHour, secondMinute, 0));
 
         }
-        setDate(secondYear, secondMonthOfYear , secondDayOfMonth , secondHour , secondMinute);
+        setDate(secondYear, secondMonthOfYear, secondDayOfMonth, secondHour, secondMinute);
 
 
-        if( requestCode == REQUEST_SELECT_CONTACT ){
-            Uri contactUri = data.getData();
+        if (requestCode == REQUEST_SELECT_CONTACT) {
+           Uri contactUri = data.getData();
             String[] projection = new String[]{ContactsContract.Contacts.DISPLAY_NAME};
 
             Cursor cursor = getActivity().getContentResolver().query(
-                    contactUri ,
-                    projection ,
-                    null ,
-                    null ,
+                    contactUri,
+                    projection,
+                    null,
+                    null,
                     null
             );
 
-            if(cursor == null || cursor.getCount() == 0)
+            if (cursor == null || cursor.getCount() == 0)
                 return;
 
             try {
                 cursor.moveToFirst();
-                String suspect = cursor.getString(0);
-                mCrime.setSuspect(suspect);
-                mButtonChooseSuspect.setText(suspect);
-                  mCrimeRepository.updateCrime(mCrime);
-                }finally {
+               suspectName = cursor.getString(0);
+                mCrime.setSuspect(suspectName);
+                mButtonChooseSuspect.setText(suspectName);
+                mCrimeRepository.updateCrime(mCrime);
+            } finally {
                 cursor.close();
             }
 
+
         }
 
+        if (requestCode == REQUEST_SELECT_PHONE_NUMBER) {
+            // Get the URI and query the content provider for the phone number
+            Uri contactUri = data.getData();
+            String[] projection = new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER};
+            Cursor cursor = getActivity().getContentResolver().query(contactUri, projection,
+                    null, null, null);
+            // If the cursor returned is valid, get the phone number
+            if (cursor != null && cursor.moveToFirst()) {
+                int numberIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+                PhoneNumberContact = cursor.getString(numberIndex);
+                mButtonDial.setText( "Dial : " + PhoneNumberContact);
+                mButtonCall.setText("Call : " + PhoneNumberContact);
+            }
+        }
 
     }
 
     private void setDate(int year, int month, int day, int hour, int minute) {
         Calendar cal = Calendar.getInstance();
 
-        if(year == 0  && month == 0  && day ==  0){
-            cal.set(firstYear , firstMonthOfYear , firstDayOfMonth , hour , minute , 0);
-        }else  if(hour == 0 && minute == 0){
-            cal.set(year , month , day , firstHour , firstMinute , 0);
-        }else{
-            cal.set(year , month , day , hour , minute , 0);
+        if (year == 0 && month == 0 && day == 0) {
+            cal.set(firstYear, firstMonthOfYear, firstDayOfMonth, hour, minute, 0);
+        } else if (hour == 0 && minute == 0) {
+            cal.set(year, month, day, firstHour, firstMinute, 0);
+        } else {
+            cal.set(year, month, day, hour, minute, 0);
         }
 
-        Date date =  cal.getTime();
+        Date date = cal.getTime();
         mCrime.setDate(date);
         updateCrime();
     }
