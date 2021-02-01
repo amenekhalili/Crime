@@ -10,23 +10,57 @@
     tools:context=".controller.Fragment.CrimeDetailFragment">
 
 
-    <TextView
-        android:id="@+id/textView"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="2dp"
-        android:padding="2dp"
-        android:textColor="#0C0C0C"
-        android:text="TITLE" />
+        android:orientation="horizontal">
 
-    <EditText
-        android:id="@+id/Edittext_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="2dp"
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-        android:hint="Enter a title for the crime"
-        android:padding="2dp"></EditText>
+            <ImageView
+                android:id="@+id/imgview_photo"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                tools:src="@tools:sample/avatars" />
+
+            <ImageButton
+                android:id="@+id/imgview_take_picture"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@android:drawable/ic_menu_camera" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="4dp">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                android:padding="2dp"
+                android:text="TITLE"
+                android:textColor="#0C0C0C" />
+
+            <EditText
+                android:id="@+id/Edittext_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+
+                android:hint="Enter a title for the crime"
+                android:padding="2dp"></EditText>
+        </LinearLayout>
+
+    </LinearLayout>
+
 
     <TextView
         android:id="@+id/textView2"
@@ -34,8 +68,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="2dp"
         android:padding="2dp"
-        android:textColor="#0C0C0C"
-        android:text="DETAILS" />
+        android:text="DETAILS"
+        android:textColor="#0C0C0C" />
 
     <Button
         android:id="@+id/btn_date"
@@ -115,8 +149,8 @@
             android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"
             android:layout_marginRight="20dp"
-            android:text="@string/crime_suspect_text"
-            android:background="#A1BCD3"/>/>
+            android:background="#A1BCD3"
+            android:text="@string/crime_suspect_text" />/>
 
         <Button
             android:id="@+id/btn_report_suspect"
@@ -127,8 +161,8 @@
             android:layout_marginTop="4dp"
             android:layout_marginEnd="20dp"
             android:layout_marginRight="20dp"
-            android:text="@string/crime_report_text"
-            android:background="#A1BCD3"/>
+            android:background="#A1BCD3"
+            android:text="@string/crime_report_text" />
     </LinearLayout>
 
     <LinearLayout
@@ -143,18 +177,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
-            android:text="call"
+            android:background="#F1C6D5"
             android:padding="8dp"
-            android:background="#F1C6D5"/>
+            android:text="call" />
 
         <Button
             android:id="@+id/btn_dial"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
-            android:text="Dial"
+            android:background="#F1C6D5"
             android:padding="8dp"
-            android:background="#F1C6D5"/>
+            android:text="Dial" />
     </LinearLayout>
 
 </LinearLayout>

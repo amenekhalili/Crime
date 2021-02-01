@@ -12,6 +12,7 @@ import com.example.crime.dataBase.CrimeDBSchema;
 import static com.example.crime.dataBase.CrimeDBSchema.CrimeTable.cols;
 
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -110,6 +111,13 @@ public class CrimeDBRepository implements IRepository {
 
          mDatabase.insert(CrimeDBSchema.CrimeTable.NAME, null, values);
     }
+
+    public File getPhotoFile(Crime crime){
+        File fileDir = mContext.getFilesDir();
+        File photoFile = new File(fileDir , crime.getPhotoFileName());
+        return photoFile;
+    }
+
 
     private ContentValues getContentValues(Crime crime) {
         ContentValues values = new ContentValues();

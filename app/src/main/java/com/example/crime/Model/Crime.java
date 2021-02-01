@@ -75,4 +75,8 @@ public class Crime {
         mChecked = checked;
         mSuspect = suspect;
     }
+
+    public String getPhotoFileName(){
+        return "IMG_" + getId().toString() + ".jpg";
+    }
 }
