@@ -20,7 +20,7 @@ import com.example.crime.controller.Fragment.CrimeDetailFragment;
 import java.util.List;
 import java.util.UUID;
 
-public class CrimePagerActivity extends AppCompatActivity {
+public class CrimePagerActivity extends AppCompatActivity implements CrimeDetailFragment.Callbacks {
     public static final String EXTRA_CRIME_ID = "com.example.crime.controller.CRIME_ID";
     private ViewPager2 mViewPager2;
     private IRepository mCrimeRepository;
@@ -64,6 +64,11 @@ public class CrimePagerActivity extends AppCompatActivity {
         mViewPager2.setCurrentItem(currentIndex );
         mViewPager2.setPageTransformer(new zoomAnimation());
         }
+
+    @Override
+    public void onCrimeUpdated(Crime crime) {
+        
+    }
 
     public class crimePagerAdapter extends FragmentStateAdapter {
         private List<Crime> mCrimes;

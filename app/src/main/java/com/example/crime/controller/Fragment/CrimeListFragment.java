@@ -1,5 +1,6 @@
 package com.example.crime.controller.Fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -40,7 +41,9 @@ public class CrimeListFragment extends Fragment {
     private IRepository mCrimeRepository;
     private CrimeAdapter crimeAdapter;
     private boolean isSubtitleVisible = false;
-        private String UserName;
+    private String UserName;
+    private Callbacks mCallbacks;
+
 
 
     public static CrimeListFragment newInstance(String UserName) {
@@ -88,14 +91,29 @@ public class CrimeListFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
+        if(context instanceof  Callbacks)
+            mCallbacks = (Callbacks) context;
+        else {
+            throw new ClassCastException(context.toString()
+                    +"must implement onFragmentInteractionListener");
+
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.meu_item_add_crime:
                 Crime crime = new Crime();
                 mCrimeRepository.insertCrime(crime);
+                 mCallbacks.onCrimeSelected(crime);
+                 updateUI();
 
-                Intent intent = CrimePagerActivity.newIntent(getActivity() , crime.getId());
-                startActivity(intent);
+                /*Intent intent = CrimePagerActivity.newIntent(getActivity() , crime.getId());
+                startActivity(intent);*/
                 return true;
             case R.id.menu_item_subtitle_crime:
                      isSubtitleVisible = ! isSubtitleVisible;
@@ -183,7 +201,7 @@ public class CrimeListFragment extends Fragment {
 
     }
 
-    private void updateUI() {
+    public void updateUI() {
         List<Crime> crimes = mCrimeRepository.getCrimes();
         if (crimeAdapter == null) {
             crimeAdapter = new CrimeAdapter(crimes);
@@ -195,6 +213,9 @@ public class CrimeListFragment extends Fragment {
 
     }
 
+    private void findViews(View view) {
+        mRecyclerView = view.findViewById(R.id.list_recyclerview);
+    }
     private void initViews() {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         updateUI();
@@ -219,8 +240,10 @@ public class CrimeListFragment extends Fragment {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = CrimePagerActivity.newIntent(getActivity(), mCrime.getId());
-                    startActivity(intent);
+                    /*Intent intent = CrimePagerActivity.newIntent(getActivity(), mCrime.getId());
+                    startActivity(intent);*/
+                    mCallbacks.onCrimeSelected(mCrime);
+
                 }
             });
 
@@ -285,7 +308,10 @@ public class CrimeListFragment extends Fragment {
         }
     }
 
-    private void findViews(View view) {
-        mRecyclerView = view.findViewById(R.id.list_recyclerview);
+
+    public interface Callbacks{
+        void onCrimeSelected(Crime crime);
     }
+
 }
+

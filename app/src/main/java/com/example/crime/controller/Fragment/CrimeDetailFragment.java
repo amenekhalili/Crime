@@ -3,6 +3,7 @@ package com.example.crime.controller.Fragment;
 import android.Manifest;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -50,7 +51,7 @@ import java.util.List;
 import java.util.UUID;
 
 
-public class CrimeDetailFragment extends Fragment {
+public class  CrimeDetailFragment extends Fragment {
     public static final String DATA_PICKER_TAG = "Data_picker_Tag";
     public static final int REQUEST_CODE_DATA_PICKER = 0;
     public static final String TIME_PICKER_TAG = "Time_picker_Tag";
@@ -93,6 +94,7 @@ public class CrimeDetailFragment extends Fragment {
     private ImageView mImageViewPhoto;
     private ImageButton mImageButtonTakePhoto;
     private File mPhotoFile;
+    private Callbacks mCallbacks;
 
     String PhoneNumberContact = "";
 
@@ -117,8 +119,20 @@ public class CrimeDetailFragment extends Fragment {
 
     }
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if(context instanceof Callbacks){
+            mCallbacks = (Callbacks) context;
+        }
+        else{
+            throw new ClassCastException(context.toString()+
+                    "must implement Callbacks");
+        }
+    }
+
     private void updateCrime() {
-        mCrimeRepository.updateCrime(mCrime);
+        updateCrimee();
     }
 
     @Override
@@ -227,7 +241,7 @@ public class CrimeDetailFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 mCrime.setTitle(s.toString());
-                mCrimeRepository.updateCrime(mCrime);
+                updateCrimee();
             }
 
             @Override
@@ -240,7 +254,7 @@ public class CrimeDetailFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 mCrime.setSolved(isChecked);
-                mCrimeRepository.updateCrime(mCrime);
+                updateCrimee();
             }
         });
 
@@ -343,6 +357,11 @@ public class CrimeDetailFragment extends Fragment {
                 takePicture();
             }
         });
+    }
+
+    private void updateCrimee() {
+        mCrimeRepository.updateCrime(mCrime);
+        mCallbacks.onCrimeUpdated(mCrime);
     }
 
     private void takePicture() {
@@ -509,7 +528,7 @@ public class CrimeDetailFragment extends Fragment {
                 suspectName = cursor.getString(0);
                 mCrime.setSuspect(suspectName);
                 mButtonChooseSuspect.setText(suspectName);
-                mCrimeRepository.updateCrime(mCrime);
+                updateCrimee();
             } finally {
                 cursor.close();
             }
@@ -567,5 +586,9 @@ public class CrimeDetailFragment extends Fragment {
         mImageViewPhoto.setImageBitmap(bitmap);
     }
 
+
+    public interface Callbacks{
+        void onCrimeUpdated(Crime crime);
+    }
 
 }
