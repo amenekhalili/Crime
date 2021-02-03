@@ -67,7 +67,7 @@ public class CrimePagerActivity extends AppCompatActivity implements CrimeDetail
 
     @Override
     public void onCrimeUpdated(Crime crime) {
-        
+
     }
 
     public class crimePagerAdapter extends FragmentStateAdapter {
