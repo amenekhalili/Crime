@@ -9,7 +9,7 @@ import androidx.fragment.app.FragmentManager;
 import com.example.crime.R;
 import com.example.crime.controller.Fragment.CrimeDetailFragment;
 
-public  abstract class SingleFragmentAvtivity extends AppCompatActivity {
+public  abstract class SingleFragmentActivity extends AppCompatActivity {
    public abstract Fragment CreateFragment();
 
     @Override

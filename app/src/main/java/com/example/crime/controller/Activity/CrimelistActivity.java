@@ -1,6 +1,7 @@
 package com.example.crime.controller.Activity;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +13,7 @@ import com.example.crime.controller.Fragment.CrimeDetailFragment;
 import com.example.crime.controller.Fragment.CrimeListFragment;
 import com.example.crime.controller.Fragment.Empty_RecyclerView_Fragment;
 
-public class CrimelistActivity extends SingleFragmentAvtivity
+public class CrimelistActivity extends SingleFragmentActivity
          implements CrimeListFragment.Callbacks , CrimeDetailFragment.Callbacks {
 
     public static final String EXTRA_NAME = "EXTRA_NAME";
@@ -55,6 +56,19 @@ public class CrimelistActivity extends SingleFragmentAvtivity
 
         }
 
+
+    }
+
+    @Override
+    public void setListPage(int size) {
+        if(size  == 0){
+
+            FragmentManager fragmentManager =  getSupportFragmentManager();
+            Empty_RecyclerView_Fragment empty_recyclerView_fragment = Empty_RecyclerView_Fragment.newInstance(null);
+            fragmentManager.beginTransaction().
+                    replace(R.id.container_fragment , empty_recyclerView_fragment).
+                    commit();
+        }
 
     }
 

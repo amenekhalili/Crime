@@ -9,7 +9,7 @@ import com.example.crime.controller.Fragment.SignUpFragment;
 
 import java.util.UUID;
 
-public class SignupActivity extends SingleFragmentAvtivity {
+public class SignupActivity extends SingleFragmentActivity {
 
     public static final String EXTRA_ID = "EXTRA_ID";
 

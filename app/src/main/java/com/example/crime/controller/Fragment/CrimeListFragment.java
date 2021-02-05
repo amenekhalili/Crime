@@ -1,7 +1,6 @@
 package com.example.crime.controller.Fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,7 +16,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,10 +24,8 @@ import com.example.crime.Model.Crime;
 import com.example.crime.R;
 import com.example.crime.Repository.CrimeDBRepository;
 import com.example.crime.Repository.IRepository;
-import com.example.crime.controller.Activity.CrimePagerActivity;
-import com.example.crime.controller.Activity.CrimelistActivity;
+import com.google.android.material.snackbar.Snackbar;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -43,7 +40,7 @@ public class CrimeListFragment extends Fragment {
     private boolean isSubtitleVisible = false;
     private String UserName;
     private Callbacks mCallbacks;
-
+    private List<Crime> mCrimes;
 
 
     public static CrimeListFragment newInstance(String UserName) {
@@ -56,7 +53,6 @@ public class CrimeListFragment extends Fragment {
     }
 
 
-
     public CrimeListFragment() {
         // Required empty public constructor
     }
@@ -67,10 +63,12 @@ public class CrimeListFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         mCrimeRepository = CrimeDBRepository.getIsInstance(getActivity());
-        UserName = getArguments().getString(ARG_USERNAME , null);
+        UserName = getArguments().getString(ARG_USERNAME, null);
         setHasOptionsMenu(true);
-           if(savedInstanceState != null)
-               isSubtitleVisible = savedInstanceState.getBoolean(SUBTITLE_VISIBILITY);
+        if (savedInstanceState != null)
+            isSubtitleVisible = savedInstanceState.getBoolean(SUBTITLE_VISIBILITY);
+
+
     }
 
     @Override
@@ -79,12 +77,13 @@ public class CrimeListFragment extends Fragment {
 
         findViews(view);
         initViews();
+
         return view;
     }
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.list_fragment_menu , menu);
+        inflater.inflate(R.menu.list_fragment_menu, menu);
         MenuItem item = menu.findItem(R.id.menu_item_subtitle_crime);
         setTxtSubTitle(item);
 
@@ -94,61 +93,64 @@ public class CrimeListFragment extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
-        if(context instanceof  Callbacks)
+        if (context instanceof Callbacks)
             mCallbacks = (Callbacks) context;
         else {
             throw new ClassCastException(context.toString()
-                    +"must implement onFragmentInteractionListener");
+                    + "must implement onFragmentInteractionListener");
 
         }
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.meu_item_add_crime:
                 Crime crime = new Crime();
                 mCrimeRepository.insertCrime(crime);
-                 mCallbacks.onCrimeSelected(crime);
-                 updateUI();
+                mCallbacks.onCrimeSelected(crime);
+                updateUI();
 
-                /*Intent intent = CrimePagerActivity.newIntent(getActivity() , crime.getId());
-                startActivity(intent);*/
                 return true;
             case R.id.menu_item_subtitle_crime:
-                     isSubtitleVisible = ! isSubtitleVisible;
+                isSubtitleVisible = !isSubtitleVisible;
                 updateSubtitle();
                 setTxtSubTitle(item);
                 return true;
             case R.id.remove_multiple_Crime:
                 List<Crime> crimes = mCrimeRepository.getCrimes();
-                for (int i = 0; i < crimes.size() ; i++) {
+                for (int i = 0; i < crimes.size(); i++) {
                     UUID id = crimes.get(i).getId();
-                    if(mCrimeRepository.getCrime(id).isChecked())
-                     mCrimeRepository.deleteCrime(crimes.get(i));
+                    if (mCrimeRepository.getCrime(id).isChecked())
+                        mCrimeRepository.deleteCrime(crimes.get(i));
+
                 }
 
-
-                setListPage();
+                int size = mCrimeRepository.sizeList();
+                mCallbacks.setListPage(size);
+                updateUI();
+                //  setListPage();
                 return true;
             case R.id.menu_sselect_all:
                 List<Crime> crimes1 = mCrimeRepository.getCrimes();
 
-                for (int i = 0; i < crimes1.size() ; i++) {
+                for (int i = 0; i < crimes1.size(); i++) {
                     UUID id = crimes1.get(i).getId();
                     Crime crime1 = mCrimeRepository.getCrime(id);
                     crime1.setChecked(true);
                     mCrimeRepository.updateCrime(crime1);
 
                 }
-
-                setListPage();
+                int size1 = mCrimeRepository.sizeList();
+                mCallbacks.setListPage(size1);
+                updateUI();
+                // setListPage();
                 return true;
             case R.id.menu_unselect_all:
 
-                  List<Crime> crimes2 = mCrimeRepository.getCrimes();
+                List<Crime> crimes2 = mCrimeRepository.getCrimes();
 
-                for (int i = 0; i < crimes2.size() ; i++) {
+                for (int i = 0; i < crimes2.size(); i++) {
                     UUID id = crimes2.get(i).getId();
                     Crime crime1 = mCrimeRepository.getCrime(id);
                     crime1.setChecked(false);
@@ -161,17 +163,6 @@ public class CrimeListFragment extends Fragment {
         }
     }
 
-    private void setListPage() {
-        if(mCrimeRepository.sizeList() == 0){
-
-            FragmentManager fragmentManager =  getActivity().getSupportFragmentManager();
-            Empty_RecyclerView_Fragment empty_recyclerView_fragment = Empty_RecyclerView_Fragment.newInstance(null);
-            fragmentManager.beginTransaction().
-                    replace(R.id.container_fragment , empty_recyclerView_fragment).
-                    commit();
-        }
-        updateUI();
-    }
 
 
 
@@ -213,12 +204,56 @@ public class CrimeListFragment extends Fragment {
 
     }
 
+
+
+
+
+
     private void findViews(View view) {
         mRecyclerView = view.findViewById(R.id.list_recyclerview);
     }
+
     private void initViews() {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         updateUI();
+
+
+        final ItemTouchHelper mHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback
+                (0, ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT){
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView,
+                                  @NonNull RecyclerView.ViewHolder viewHolder,
+                                  @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+
+                int position = viewHolder.getAdapterPosition();
+                final Crime  crime = mCrimes.get(position);
+                mCrimes.remove(position);
+                crimeAdapter.notifyDataSetChanged();
+
+                mCrimeRepository.deleteCrime(crime);
+                mCallbacks.setListPage(mCrimeRepository.sizeList());
+
+              final Snackbar snackbar = Snackbar.make(getView(),"delete After 5 seconds",Snackbar.LENGTH_SHORT);
+              snackbar.setAction("UNDO", new View.OnClickListener() {
+                  @Override
+                  public void onClick(View v) {
+                     mCrimes.add(crime);
+                    crimeAdapter.notifyDataSetChanged();
+
+                  }
+              });
+              snackbar.show();
+
+
+             }
+        });
+        mHelper.attachToRecyclerView(mRecyclerView);
+
 
     }
 
@@ -240,20 +275,19 @@ public class CrimeListFragment extends Fragment {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    /*Intent intent = CrimePagerActivity.newIntent(getActivity(), mCrime.getId());
-                    startActivity(intent);*/
+
                     mCallbacks.onCrimeSelected(mCrime);
 
                 }
             });
 
-            mCheckBoxDelete.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
-            {
+            mCheckBoxDelete.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
                     mCrime.setChecked(isChecked);
                     mCrimeRepository.updateCrime(mCrime);
+
                 }
             });
         }
@@ -263,7 +297,7 @@ public class CrimeListFragment extends Fragment {
             mTextViewDate.setText(crime.getDate().toString());
             mCrime = crime;
             mImageViewSolved.setVisibility(crime.isSolved() ? View.VISIBLE : View.GONE);
-            mCheckBoxDelete.setSelected(crime.isChecked() ? true : false);
+            mCheckBoxDelete.setChecked(crime.isChecked() ? true : false);
         }
 
 
@@ -272,7 +306,7 @@ public class CrimeListFragment extends Fragment {
 
     private class CrimeAdapter extends RecyclerView.Adapter<CrimeHolder> {
 
-        private List<Crime> mCrimes;
+     //   private List<Crime> mCrimes;
 
         public List<Crime> getCrimes() {
             return mCrimes;
@@ -285,6 +319,10 @@ public class CrimeListFragment extends Fragment {
         public CrimeAdapter(List<Crime> crimes) {
             mCrimes = crimes;
         }
+
+
+
+
 
         @Override
         public int getItemCount() {
@@ -306,11 +344,18 @@ public class CrimeListFragment extends Fragment {
             Crime crime = mCrimes.get(position);
             holder.bindCrime(crime);
         }
+
+
     }
 
 
-    public interface Callbacks{
+
+
+
+    public interface Callbacks {
+
         void onCrimeSelected(Crime crime);
+        void setListPage(int size);
     }
 
 }
