@@ -230,11 +230,12 @@ public class CrimeListFragment extends Fragment {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
 
-                int position = viewHolder.getAdapterPosition();
+
+
+                final int position = viewHolder.getAdapterPosition();
                 final Crime  crime = mCrimes.get(position);
                 mCrimes.remove(position);
                 crimeAdapter.notifyDataSetChanged();
-
                 mCrimeRepository.deleteCrime(crime);
                 mCallbacks.setListPage(mCrimeRepository.sizeList());
 
@@ -242,8 +243,10 @@ public class CrimeListFragment extends Fragment {
               snackbar.setAction("UNDO", new View.OnClickListener() {
                   @Override
                   public void onClick(View v) {
-                     mCrimes.add(crime);
-                    crimeAdapter.notifyDataSetChanged();
+                     /* mCrimes.add(position , crime);
+                      crimeAdapter.notifyDataSetChanged();
+                      mRecyclerView.scrollToPosition(position);
+                      mCrimeRepository.insertCrime(crime);*/
 
                   }
               });
@@ -306,7 +309,7 @@ public class CrimeListFragment extends Fragment {
 
     private class CrimeAdapter extends RecyclerView.Adapter<CrimeHolder> {
 
-     //   private List<Crime> mCrimes;
+     //  private List<Crime> mCrimes;
 
         public List<Crime> getCrimes() {
             return mCrimes;

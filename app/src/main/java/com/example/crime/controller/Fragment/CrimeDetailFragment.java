@@ -321,7 +321,7 @@ public class  CrimeDetailFragment extends Fragment {
         mButtonChooseSuspect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //selectContact();
+                selectContact();
                 selectContactCall();
             }
         });

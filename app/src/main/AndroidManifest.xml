@@ -38,6 +38,7 @@
                 android:resource="@xml/files_path"/>
 
         </provider>
+
     </application>
 
 </manifest>

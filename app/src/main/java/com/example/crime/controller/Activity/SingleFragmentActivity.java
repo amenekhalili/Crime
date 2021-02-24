@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.crime.R;
-import com.example.crime.controller.Fragment.CrimeDetailFragment;
+
 
 public  abstract class SingleFragmentActivity extends AppCompatActivity {
    public abstract Fragment CreateFragment();
@@ -28,8 +28,5 @@ public  abstract class SingleFragmentActivity extends AppCompatActivity {
                     .add(R.id.container_fragment ,CreateFragment())
                     .commit();
         }
-
-
-
     }
 }
